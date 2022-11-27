@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name" translatable="false">Booker</string>
+    <string name="menu">Menu</string>
+    <string name="city">City</string>
+    <string name="check_in_date">Check-in date</string>
+    <string name="check_out_date">Check-out date</string>
+    <string name="server_link" translatable="false">http://localhost:8080/api/</string>
+    <string name="adults_count">Adults count</string>
+    <string name="children_count">Children count</string>
+    <string name="error_check_in_date_after_check_out">Check-in date must be earlier than check-out date</string>
+    <string name="error_check_in_date_before_current_date">You can\'t select dates in the past</string>
+    <string name="error_adults_count">Adults count must be between 1 and 30</string>
+    <string name="error_children_count">Children count must be between 0 and 30</string>
+    <string name="search">Search</string>
+</resources>

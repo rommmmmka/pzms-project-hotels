@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu">Меню</string>
+    <string name="city">Город</string>
+    <string name="check_in_date">Дата заселения</string>
+    <string name="check_out_date">Дата выселения</string>
+    <string name="adults_count">Количество взрослых</string>
+    <string name="children_count">Количество детей</string>
+    <string name="error_check_in_date_after_check_out">Дата заселения должна быть раньше даты выселения</string>
+    <string name="error_check_in_date_before_current_date">Вы не можете выбрать даты в прошлом</string>
+    <string name="error_adults_count">Количество взрослых должно быть от 1 до 30</string>
+    <string name="error_children_count">Количество детей должно быть от 0 до 30</string>
+    <string name="search">Поиск</string>
+</resources>
