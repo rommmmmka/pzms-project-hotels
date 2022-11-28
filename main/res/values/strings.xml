@@ -12,4 +12,10 @@
     <string name="error_adults_count">Adults count must be between 1 and 30</string>
     <string name="error_children_count">Children count must be between 0 and 30</string>
     <string name="search">Search</string>
+    <string name="choose_city">Choose city</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="pick_date">Pick date</string>
+    <string name="loading">Loading...</string>
+    <string name="error_connecting_to_server">Error connecting to server</string>
 </resources>

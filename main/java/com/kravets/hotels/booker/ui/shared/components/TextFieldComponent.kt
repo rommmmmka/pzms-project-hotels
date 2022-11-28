@@ -2,23 +2,22 @@ package com.kravets.hotels.booker.ui.shared.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import com.kravets.hotels.booker.R
 import com.kravets.hotels.booker.ui.theme.DarkRed
 import com.kravets.hotels.booker.ui.theme.Purple40
+import java.time.format.TextStyle
 
 @ExperimentalMaterial3Api
 @Composable
@@ -31,12 +30,14 @@ fun TextFieldDecimalComponent(
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
+//            .height(60.dp)
             .padding(bottom = 5.dp),
         value = value,
+        textStyle = MaterialTheme.typography.labelLarge,
         onValueChange = onValueChange,
         label = {
             Text(
-                fontSize = 2.4.em,
+                style = MaterialTheme.typography.labelSmall,
                 text = stringResource(id = descriptionStringId)
             )
         },

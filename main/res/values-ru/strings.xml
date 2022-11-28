@@ -11,4 +11,10 @@
     <string name="error_adults_count">Количество взрослых должно быть от 1 до 30</string>
     <string name="error_children_count">Количество детей должно быть от 0 до 30</string>
     <string name="search">Поиск</string>
+    <string name="choose_city">Выберите город</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="cancel">Отменить</string>
+    <string name="pick_date">Выберите дату</string>
+    <string name="loading">Загрузка...</string>
+    <string name="error_connecting_to_server">Ошибка связи с сервером</string>
 </resources>

@@ -6,8 +6,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kravets.hotels.booker.ui.screens.main_page.MainPageScreen
-import com.kravets.hotels.booker.ui.screens.main_page.MainPageViewModel
+import com.kravets.hotels.booker.ui.screen.view.MainPageView
+import com.kravets.hotels.booker.ui.screen.view_model.MainPageViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object Routes {
     const val MainPage = "main_page"
@@ -25,6 +26,7 @@ object Routes {
 //        "popular_games/$minReleaseTimestamp/$subtitle"
 }
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterial3Api
 @Composable
 fun Navigation() {
@@ -36,7 +38,7 @@ fun Navigation() {
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
         composable(Routes.MainPage) {
-            MainPageScreen(viewModel = MainPageViewModel(), navController = navController)
+            MainPageView(viewModel = MainPageViewModel(), navController = navController)
         }
     }
 
