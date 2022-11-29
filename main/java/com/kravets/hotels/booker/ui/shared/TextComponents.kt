@@ -1,4 +1,4 @@
-package com.kravets.hotels.booker.ui.shared.components
+package com.kravets.hotels.booker.ui.shared
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +11,6 @@ fun ValidationErrorComponent(errorMessageId: Int) {
     Text(
         fontSize = 2.4.em,
         color = DarkRed,
-        text = stringResource (id = errorMessageId)
+        text = stringResource(id = errorMessageId)
     )
 }

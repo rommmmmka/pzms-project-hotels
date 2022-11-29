@@ -17,4 +17,18 @@
     <string name="pick_date">Выберыце дату</string>
     <string name="loading">Загрузка...</string>
     <string name="error_connecting_to_server">Памылка сувязі з серверам</string>
+    <string name="rub_per_night">руб./ноч</string>
+    <plurals name="free_spaces">
+        <item quantity="one">%d вольнае месца</item>
+        <item quantity="few">%d вольныя месцы</item>
+        <item quantity="many">%d вольных месцаў</item>
+    </plurals>
+    <string name="limit_people_header">Месцы</string>
+    <string name="limit_adults">"Для дарослых: "</string>
+    <string name="limit_children">"Для дзяцей: "</string>
+    <string name="beds">Ложкі</string>
+    <string name="beds_for_one">"Аднамесныя: "</string>
+    <string name="beds_for_two">"Двумесныя: "</string>
+    <string name="prepayment_required">Патрабуецца перадаплата</string>
+    <string name="prepayment_not_needed">Без перадаплаты</string>
 </resources>

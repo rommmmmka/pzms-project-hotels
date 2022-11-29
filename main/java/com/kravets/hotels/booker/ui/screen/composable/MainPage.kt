@@ -1,48 +1,52 @@
-package com.kravets.hotels.booker.ui.screen.view
+package com.kravets.hotels.booker.ui.screen.composable
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kravets.hotels.booker.R
 import com.kravets.hotels.booker.ui.screen.view_model.MainPageViewModel
-import com.kravets.hotels.booker.ui.shared.components.*
+import com.kravets.hotels.booker.ui.shared.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.format.DateTimeFormatter
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterial3Api
 @Composable
-fun MainPageView(viewModel: MainPageViewModel, navController: NavController) {
-    val snackbarHostState by viewModel.snackbarHostState.collectAsState()
+fun MainPage(
+    viewModel: MainPageViewModel,
+    navController: NavController,
+    snackbarHostState: SnackbarHostState
+) {
     val displaySnackbarError by viewModel.displaySnackbarError.collectAsState()
-    val snackbarMessage = stringResource(id = R.string.error_connecting_to_server)
-
-    ScaffoldComponent(
-        topBarStringId = R.string.app_name,
-        snackbarHostState = snackbarHostState,
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                SearchPart(viewModel, navController)
-                ResultsPart()
-            }
-        }
-    )
 
     if (displaySnackbarError) {
+        val snackbarMessage = stringResource(id = R.string.error_connecting_to_server)
         LaunchedEffect(displaySnackbarError) {
             snackbarHostState.showSnackbar(snackbarMessage)
             viewModel.displaySnackbarError.value = false
         }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SearchPart(viewModel, navController)
+        ResultsPart(viewModel)
     }
 }
 
@@ -75,7 +79,7 @@ fun SearchPartCityPicker(viewModel: MainPageViewModel) {
         descriptionStringId = R.string.city,
         onClick = {
             if (isCitiesListLoaded) {
-                viewModel.changeCityDialogStatus(true)
+                viewModel.isCityDialogActive.value = true
             }
         }
     ) {
@@ -145,9 +149,9 @@ fun SearchPartDatePickers(viewModel: MainPageViewModel) {
             maxDate = currentServerDate?.plusDays(179),
             date = checkInDate,
             onDateSelected = {
-                viewModel.updateCheckInDate(it)
+                viewModel.checkInDate.value = it
                 if (it >= checkOutDate) {
-                    viewModel.updateCheckOutDate(it.plusDays(1))
+                    viewModel.checkOutDate.value = it.plusDays(1)
                 }
                 viewModel.isCheckInDatePickerDialogActive.value = false
             },
@@ -177,7 +181,7 @@ fun SearchPartDatePickers(viewModel: MainPageViewModel) {
             maxDate = currentServerDate!!.plusDays(180),
             date = checkOutDate,
             onDateSelected = {
-                viewModel.updateCheckOutDate(it)
+                viewModel.checkOutDate.value = it
                 viewModel.isCheckOutDatePickerDialogActive.value = false
             },
             onDismissRequest = {
@@ -228,13 +232,73 @@ fun SearchPartButtonSubmit(viewModel: MainPageViewModel) {
             focusManager.clearFocus()
             viewModel.onLoginPressed()
         },
-        enabled = isSearchButtonEnabled,
+        enabled = isSearchButtonEnabled
     ) {
         Text(stringResource(id = R.string.search))
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
-fun ResultsPart() {
-    Text(text = "hi")
+fun ResultsPart(viewModel: MainPageViewModel) {
+    val isProcessingSearchRequest by viewModel.isProcessingSearchRequest.collectAsState()
+
+    if (isProcessingSearchRequest) {
+        CircularProgressIndicator()
+    } else {
+        SearchResults(viewModel)
+    }
+
+}
+
+@ExperimentalCoroutinesApi
+@Composable
+fun SearchResults(viewModel: MainPageViewModel) {
+    val searchResults by viewModel.searchResults.collectAsState()
+
+    searchResults.forEach {
+        CardComponent(
+            image = it.coverPhoto,
+            title = it.name,
+            secondTitle = LocalContext.current.resources.getQuantityString(
+                R.plurals.free_spaces,
+                it.freeRoomsLeft,
+                it.freeRoomsLeft
+            ),
+            thirdTitle = "${it.costPerNight} ${stringResource(id = R.string.rub_per_night)}"
+        ) {
+            if (it.description != "") {
+                CardTextComponent(it.description)
+                Spacer(Modifier.height(5.dp))
+            }
+            CardTextComponentBold(stringResource(R.string.limit_people_header))
+            CardTextComponent(stringResource(R.string.limit_adults) + it.adultsLimit)
+            CardTextComponent(stringResource(R.string.limit_children) + (it.guestsLimit - it.adultsLimit))
+            Spacer(Modifier.height(5.dp))
+            CardTextComponentBold(stringResource(R.string.beds))
+            CardTextComponent(stringResource(R.string.beds_for_one) + it.bedsForOnePersonCount)
+            CardTextComponent(stringResource(R.string.beds_for_two) + it.bedsForTwoPersonsCount)
+            Spacer(Modifier.height(5.dp))
+            CardTextComponentBold(
+                stringResource(
+                    if (it.prepaymentRequired) R.string.prepayment_required
+                    else R.string.prepayment_not_needed
+                )
+            )
+            Spacer(Modifier.height(5.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextButton(onClick = { /*TODO*/ }) {
+                    Text("Гатэль: " + it.hotel.name)
+                }
+                ElevatedButton(onClick = { /*TODO*/ }) {
+                    Text("Заказаць")
+                }
+            }
+
+        }
+    }
 }

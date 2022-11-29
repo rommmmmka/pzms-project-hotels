@@ -1,21 +1,19 @@
 package com.kravets.hotels.booker.ui.screen.view_model
 
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kravets.hotels.booker.R
 import com.kravets.hotels.booker.model.entity.CityEntity
+import com.kravets.hotels.booker.model.entity.RoomEntity
 import com.kravets.hotels.booker.service.api_object.CityApiObject
 import com.kravets.hotels.booker.service.api_object.DateApiObject
+import com.kravets.hotels.booker.service.api_object.RoomApiObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @ExperimentalCoroutinesApi
 class MainPageViewModel : ViewModel() {
@@ -27,7 +25,7 @@ class MainPageViewModel : ViewModel() {
     private var _currentServerDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null)
     var currentServerDate: StateFlow<LocalDate?> = _currentServerDate
     private var _isServerDateLoaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    var isServerDateLoaded: StateFlow<Boolean> = _isServerDateLoaded
+    val isServerDateLoaded: StateFlow<Boolean> = _isServerDateLoaded
 
     var cityId: MutableStateFlow<Long> = MutableStateFlow(1)
     var checkInDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null)
@@ -44,31 +42,32 @@ class MainPageViewModel : ViewModel() {
             it.text == "" || it.text.toInt() !in 0..30
         }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
-    private var _snackbarHostState: MutableStateFlow<SnackbarHostState> = MutableStateFlow(SnackbarHostState())
-    val snackbarHostState: StateFlow<SnackbarHostState> = _snackbarHostState
     var displaySnackbarError: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
+    var isCityDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
     var isCheckInDatePickerDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
     var isCheckOutDatePickerDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    var isCityDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
+    private var _searchResults: MutableStateFlow<List<RoomEntity>> = MutableStateFlow(emptyList())
+    val searchResults: StateFlow<List<RoomEntity>> = _searchResults
     private var _isProcessingSearchRequest: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    var isProcessingSearchRequest: StateFlow<Boolean> = _isProcessingSearchRequest
+    val isProcessingSearchRequest: StateFlow<Boolean> = _isProcessingSearchRequest
 
     private var _isFormValid: StateFlow<Boolean> =
-            combine(
-                isCitiesListLoaded,
-                isServerDateLoaded,
-                adultsCountValidationError,
-                childrenCountValidationError
-            ) { v1, v2, v3, v4 ->
-                v1 && v2 && !v3 && !v4
-            }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+        combine(
+            isCitiesListLoaded,
+            isServerDateLoaded,
+            adultsCountValidationError,
+            childrenCountValidationError
+        ) { v1, v2, v3, v4 ->
+            v1 && v2 && !v3 && !v4
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     var isSearchButtonEnabled: StateFlow<Boolean> =
         combine(isProcessingSearchRequest, _isFormValid) { isProcessingSearchRequest, isFormValid ->
             !isProcessingSearchRequest && isFormValid
         }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
 
     init {
         getCitiesList()
@@ -108,18 +107,6 @@ class MainPageViewModel : ViewModel() {
         }
     }
 
-    fun changeCityDialogStatus(status: Boolean) {
-        isCityDialogActive.value = status
-    }
-
-    fun updateCheckInDate(newCheckInDate: LocalDate) {
-        checkInDate.value = newCheckInDate
-    }
-
-    fun updateCheckOutDate(newCheckOutDate: LocalDate) {
-        checkOutDate.value = newCheckOutDate
-    }
-
     fun updateAdultsCount(changedValue: TextFieldValue) {
         if (changedValue.text == adultsCount.value.text || changedValue.text == "") {
             adultsCount.value = changedValue
@@ -151,7 +138,8 @@ class MainPageViewModel : ViewModel() {
             val stringContentNoTrailingZeroes = stringContent.toInt().toString()
             val textRange =
                 changedValue.selection.start + stringContentNoTrailingZeroes.length - stringContent.length
-            childrenCount.value = TextFieldValue(stringContentNoTrailingZeroes, TextRange(textRange))
+            childrenCount.value =
+                TextFieldValue(stringContentNoTrailingZeroes, TextRange(textRange))
         } catch (_: Exception) {
         }
     }
@@ -159,7 +147,18 @@ class MainPageViewModel : ViewModel() {
     fun onLoginPressed() {
         _isProcessingSearchRequest.value = true
         viewModelScope.launch {
-            delay(1000)
+            try {
+                val results = RoomApiObject.searchRooms(
+                    cityId.value,
+                    adultsCount.value.text.toInt(),
+                    childrenCount.value.text.toInt(),
+                    checkInDate.value!!.format(DateTimeFormatter.ISO_DATE),
+                    checkOutDate.value!!.format(DateTimeFormatter.ISO_DATE)
+                )
+                _searchResults.value = results
+            } catch (_: Exception) {
+                displaySnackbarError.value = true
+            }
             _isProcessingSearchRequest.value = false
         }
     }

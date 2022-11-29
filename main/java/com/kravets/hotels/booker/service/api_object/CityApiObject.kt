@@ -1,7 +1,7 @@
 package com.kravets.hotels.booker.service.api_object
 
+import com.kravets.hotels.booker.Config
 import com.kravets.hotels.booker.model.entity.CityEntity
-import com.kravets.hotels.booker.service.Config
 import com.kravets.hotels.booker.service.api.CityApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object CityApiObject {
     private var cityApi: CityApi? = null
 
-    private fun getInstance() : CityApi {
+    private fun getInstance(): CityApi {
         if (cityApi == null) {
             cityApi = Retrofit
                 .Builder()

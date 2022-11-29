@@ -17,4 +17,18 @@
     <string name="pick_date">Выберите дату</string>
     <string name="loading">Загрузка...</string>
     <string name="error_connecting_to_server">Ошибка связи с сервером</string>
+    <string name="rub_per_night">руб./ночь</string>
+    <plurals name="free_spaces">
+        <item quantity="one">%d свободное место</item>
+        <item quantity="few">%d свободных места</item>
+        <item quantity="many">%d свободных мест</item>
+    </plurals>
+    <string name="limit_people_header">Места</string>
+    <string name="limit_adults">"Для взрослых: "</string>
+    <string name="limit_children">"Для детей: "</string>
+    <string name="beds">Кровати</string>
+    <string name="beds_for_one">"Одноместные: "</string>
+    <string name="beds_for_two">"Двуместные: "</string>
+    <string name="prepayment_required">Требуется предоплата</string>
+    <string name="prepayment_not_needed">Без предоплаты</string>
 </resources>

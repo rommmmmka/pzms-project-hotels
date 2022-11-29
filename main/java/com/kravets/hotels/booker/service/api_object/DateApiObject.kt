@@ -1,7 +1,6 @@
 package com.kravets.hotels.booker.service.api_object
 
-import com.google.gson.GsonBuilder
-import com.kravets.hotels.booker.service.Config
+import com.kravets.hotels.booker.Config
 import com.kravets.hotels.booker.service.api.DateApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

@@ -1,4 +1,4 @@
-package com.kravets.hotels.booker.ui.shared.components
+package com.kravets.hotels.booker.ui.shared
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.requiredSizeIn

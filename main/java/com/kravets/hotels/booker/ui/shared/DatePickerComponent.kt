@@ -1,16 +1,9 @@
-package com.kravets.hotels.booker.ui.shared.components
+package com.kravets.hotels.booker.ui.shared
 
 import android.text.format.DateFormat
 import android.widget.CalendarView
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,17 +24,9 @@ import com.kravets.hotels.booker.ui.theme.Typography
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 
-/**
- * A Jetpack Compose compatible Date Picker.
- * @author Arnau Mora, Joao Gavazzi
- * @param minDate The minimum date allowed to be picked.
- * @param maxDate The maximum date allowed to be picked.
- * @param onDateSelected Will get called when a date gets picked.
- * @param onDismissRequest Will get called when the user requests to close the dialog.
- */
+
 @Composable
 fun DatePickerComponent(
     minDate: LocalDate? = null,
@@ -130,13 +115,7 @@ fun DatePickerComponent(
     }
 }
 
-/**
- * Used at [DatePicker] to create the calendar picker.
- * @author Arnau Mora, Joao Gavazzi
- * @param minDate The minimum date allowed to be picked.
- * @param maxDate The maximum date allowed to be picked.
- * @param onDateSelected Will get called when a date is selected.
- */
+
 @Composable
 private fun CustomCalendarView(
     minDate: Long? = null,
