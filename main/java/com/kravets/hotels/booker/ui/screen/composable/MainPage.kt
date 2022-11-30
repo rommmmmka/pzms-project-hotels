@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.kravets.hotels.booker.R
 import com.kravets.hotels.booker.ui.screen.view_model.MainPageViewModel
 import com.kravets.hotels.booker.ui.shared.*
@@ -31,12 +30,20 @@ fun MainPage(
     snackbarHostState: SnackbarHostState
 ) {
     val displaySnackbarError by viewModel.displaySnackbarError.collectAsState()
+    val displaySnackbarSuccess by viewModel.displaySnackbarSuccess.collectAsState()
 
     if (displaySnackbarError) {
-        val snackbarMessage = stringResource(id = R.string.error_connecting_to_server)
+        val snackbarMessage = stringResource(R.string.error_connecting_to_server)
         LaunchedEffect(displaySnackbarError) {
             snackbarHostState.showSnackbar(snackbarMessage)
             viewModel.displaySnackbarError.value = false
+        }
+    }
+    if (displaySnackbarSuccess != 0) {
+        val snackbarMessage = stringResource(displaySnackbarSuccess)
+        LaunchedEffect(displaySnackbarSuccess) {
+            snackbarHostState.showSnackbar(snackbarMessage)
+            viewModel.displaySnackbarSuccess.value = 0
         }
     }
 
@@ -232,7 +239,7 @@ fun SearchPartButtonSubmit(viewModel: MainPageViewModel) {
         border = BorderStroke(1.dp, Purple40),
         onClick = {
             focusManager.clearFocus()
-            viewModel.onLoginPressed()
+            viewModel.onSubmitPressed()
         },
         enabled = isSearchButtonEnabled
     ) {

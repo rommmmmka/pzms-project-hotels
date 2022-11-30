@@ -4,6 +4,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.kravets.hotels.booker.R
+import com.kravets.hotels.booker.misc.navigateWithoutStack
 import com.kravets.hotels.booker.service.api_object.UserApiObject
 import com.kravets.hotels.booker.ui.Routes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -11,7 +13,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
-class RegisterPageViewModel(val navController: NavHostController) : ViewModel() {
+class RegisterPageViewModel(private val _navController: NavHostController) : ViewModel() {
     val displaySnackbarError: MutableStateFlow<Int> = MutableStateFlow(200)
 
     val lastname: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue(""))
@@ -20,7 +22,6 @@ class RegisterPageViewModel(val navController: NavHostController) : ViewModel() 
     val login: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue(""))
     val password: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue(""))
     val password2: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue(""))
-
 
     val lastnameValidationError: StateFlow<Boolean> = lastname.mapLatest {
         !it.text.matches(Regex("[A-zА-яЁёІіЎў'\\- ]*"))
@@ -77,7 +78,11 @@ class RegisterPageViewModel(val navController: NavHostController) : ViewModel() 
         }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     val isSubmitButtonEnabled: StateFlow<Boolean> =
-        combine(_isProcessingRequest, _isFormValid, _isFormFilled) { isProcessingRequest, isFormValid, isFormFilled ->
+        combine(
+            _isProcessingRequest,
+            _isFormValid,
+            _isFormFilled
+        ) { isProcessingRequest, isFormValid, isFormFilled ->
             !isProcessingRequest && isFormValid && isFormFilled
         }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
@@ -135,7 +140,11 @@ class RegisterPageViewModel(val navController: NavHostController) : ViewModel() 
             displaySnackbarError.value = errorCode
             _isProcessingRequest.value = false
             if (errorCode == 200) {
-                navController.navigate("${Routes.Login}?login=${login.value.text}")
+                navigateWithoutStack(
+                    _navController, viewModelScope,
+                    destination = "${Routes.Login}?login=${login.value.text}&success=${R.string.message_successful_registration}"
+                )
+//                _navController.navigate("${Routes.Login}?login=${login.value.text}&success=${R.string.message_successful_registration}")
             }
         }
     }

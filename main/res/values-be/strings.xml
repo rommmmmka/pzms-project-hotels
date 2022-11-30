@@ -15,7 +15,7 @@
     <string name="confirm">Пацвердзіць</string>
     <string name="cancel">Скасаваць</string>
     <string name="pick_date">Выберыце дату</string>
-    <string name="loading">Загрузка...</string>
+    <string name="loading">Загрузка…</string>
     <string name="error_connecting_to_server">Памылка сувязі з серверам</string>
     <string name="rub_per_night">руб./ноч</string>
     <plurals name="free_spaces">
@@ -49,4 +49,25 @@
     <string name="error_order_does_not_exist">Заказ не існуе</string>
     <string name="error_user_already_exists">Карыстальнік з такім логінам ужо існуе</string>
     <string name="error_unknown">Невядомая памылка</string>
+    <string name="app_description">Браніраванне гатэляў у Беларусі</string>
+    <string name="tab_sign_up">Рэгістрацыя</string>
+    <string name="tab_sign_in">Уваход</string>
+    <string name="message_successful_registration">Вы паспяхова зарэгістраваліся</string>
+    <string name="error_user_not_found">Карыстальнік з такім логінам не знойдзены</string>
+    <string name="error_invalid_password">Няправільны пароль</string>
+    <string name="message_successful_signing_in">Вы паспяхова ўвайшлі</string>
+    <string name="login_action">Увайсці</string>
+    <string name="message_successful_signing_out">Вы паспяхова выйшлі з акаўнта</string>
+    <string name="tab_sign_out">Выйсці</string>
+    <string name="drawer_you_have_not_signed_in">Вы не ўвайшлі ў акаўнт</string>
+    <string name="drawer_item_main">Знайдзіце сабе нумар</string>
+    <string name="drawer_item_orders">Заказы</string>
+    <string name="drawer_item_lists">Спісы</string>
+    <string name="drawer_item_hotels">Спіс гатэляў</string>
+    <string name="drawer_item_rooms">Спіс нумароў</string>
+    <string name="drawer_item_admin">Адмін-панэль</string>
+    <string name="drawer_item_admin_hotels">Гатэлі</string>
+    <string name="drawer_item_admin_rooms">Нумары</string>
+    <string name="drawer_item_admin_orders">Заказы</string>
+    <string name="drawer_item_admin_users">Карыстальнікі</string>
 </resources>

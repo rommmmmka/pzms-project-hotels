@@ -15,7 +15,7 @@
     <string name="confirm">Подтвердить</string>
     <string name="cancel">Отменить</string>
     <string name="pick_date">Выберите дату</string>
-    <string name="loading">Загрузка...</string>
+    <string name="loading">Загрузка…</string>
     <string name="error_connecting_to_server">Ошибка связи с сервером</string>
     <string name="rub_per_night">руб./ночь</string>
     <plurals name="free_spaces">
@@ -49,4 +49,25 @@
     <string name="error_order_does_not_exist">Заказ не существует</string>
     <string name="error_user_already_exists">Пользователь с таким логином уже существует</string>
     <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="app_description">Бронирование отелей в Беларуси</string>
+    <string name="tab_sign_up">Регистрация</string>
+    <string name="tab_sign_in">Вход</string>
+    <string name="message_successful_registration">Вы успешно зарегистрировались</string>
+    <string name="error_user_not_found">Пользователь с таким логином не найден</string>
+    <string name="error_invalid_password">Неправильный пароль</string>
+    <string name="message_successful_signing_in">Вы успешно вошли</string>
+    <string name="login_action">Войти</string>
+    <string name="message_successful_signing_out">Вы успешно вышли из аккаунта</string>
+    <string name="tab_sign_out">Выйти</string>
+    <string name="drawer_you_have_not_signed_in">Вы не вошли в аккаунт</string>
+    <string name="drawer_item_main">Найдите себе номер</string>
+    <string name="drawer_item_orders">Заказы</string>
+    <string name="drawer_item_lists">Списки</string>
+    <string name="drawer_item_hotels">Список отелей</string>
+    <string name="drawer_item_rooms">Список номеров</string>
+    <string name="drawer_item_admin">Админ-панель</string>
+    <string name="drawer_item_admin_hotels">Отели</string>
+    <string name="drawer_item_admin_rooms">Номера</string>
+    <string name="drawer_item_admin_orders">Заказы</string>
+    <string name="drawer_item_admin_users">Пользователи</string>
 </resources>

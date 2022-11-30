@@ -16,7 +16,7 @@
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="pick_date">Pick date</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="error_connecting_to_server">Error connecting to server</string>
     <string name="rub_per_night">rub. per night</string>
     <plurals name="free_spaces">
@@ -41,7 +41,7 @@
     <string name="error_allowed_length_6_32">The length should be from 6 to 32 characters</string>
     <string name="login_mandatory">Login*</string>
     <string name="error_passwords_not_the_same">Passwords must be the same</string>
-    <string name="register_action">Register</string>
+    <string name="register_action">Sign up</string>
     <string name="error_no_access">No access</string>
     <string name="error_invalid_filters">Error processing invalid filters</string>
     <string name="error_form_not_valid">Form is not valid</string>
@@ -49,4 +49,25 @@
     <string name="error_order_does_not_exist">Order does not exist</string>
     <string name="error_user_already_exists">User with this login already exists</string>
     <string name="error_unknown">Unknown error</string>
+    <string name="app_description">Hotel booking in Belarus</string>
+    <string name="tab_sign_up">Sign up</string>
+    <string name="tab_sign_in">Sign in</string>
+    <string name="message_successful_registration">You have successfully registered</string>
+    <string name="error_user_not_found">A user with this login was not found</string>
+    <string name="error_invalid_password">Invalid password</string>
+    <string name="message_successful_signing_in">You successfulkly signed in</string>
+    <string name="login_action">Sign in</string>
+    <string name="message_successful_signing_out">You successfully signed out</string>
+    <string name="tab_sign_out">Sign out</string>
+    <string name="drawer_you_have_not_signed_in">You have not signed in</string>
+    <string name="drawer_item_main">Find a room for yourself</string>
+    <string name="drawer_item_orders">Orders</string>
+    <string name="drawer_item_lists">Lists</string>
+    <string name="drawer_item_hotels">Hotels list</string>
+    <string name="drawer_item_rooms">Rooms list</string>
+    <string name="drawer_item_admin">Admin panel</string>
+    <string name="drawer_item_admin_hotels">Hotels</string>
+    <string name="drawer_item_admin_rooms">Rooms</string>
+    <string name="drawer_item_admin_orders">Orders</string>
+    <string name="drawer_item_admin_users">Users</string>
 </resources>

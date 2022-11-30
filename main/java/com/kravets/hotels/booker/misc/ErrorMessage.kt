@@ -12,6 +12,8 @@ object ErrorMessage {
             462 -> R.string.error_no_free_rooms
             463 -> R.string.error_order_does_not_exist
             464 -> R.string.error_user_already_exists
+            465 -> R.string.error_user_not_found
+            466 -> R.string.error_invalid_password
             else -> R.string.error_unknown
         }
     }

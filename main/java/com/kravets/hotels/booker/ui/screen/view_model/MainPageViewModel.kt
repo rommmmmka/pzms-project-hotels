@@ -16,7 +16,11 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @ExperimentalCoroutinesApi
-class MainPageViewModel : ViewModel() {
+class MainPageViewModel(successMessage: Int?) : ViewModel() {
+    val displaySnackbarError: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val displaySnackbarSuccess: MutableStateFlow<Int> =
+        MutableStateFlow(successMessage ?: 0)
+
     private val _citiesList: MutableStateFlow<List<CityEntity>> = MutableStateFlow(emptyList())
     val citiesList: StateFlow<List<CityEntity>> = _citiesList
     private val _isCitiesListLoaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -41,8 +45,6 @@ class MainPageViewModel : ViewModel() {
         childrenCount.mapLatest {
             it.text == "" || it.text.toInt() !in 0..30
         }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
-
-    val displaySnackbarError: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     val isCityDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isCheckInDatePickerDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -156,7 +158,7 @@ class MainPageViewModel : ViewModel() {
         }
     }
 
-    fun onLoginPressed() {
+    fun onSubmitPressed() {
         _isProcessingSearchRequest.value = true
         viewModelScope.launch {
             try {

@@ -1,6 +1,7 @@
 package com.kravets.hotels.booker.service.api_object
 
 import com.kravets.hotels.booker.Config
+import com.kravets.hotels.booker.model.other.UserInfo
 import com.kravets.hotels.booker.service.api.UserApi
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -30,4 +31,10 @@ object UserApiObject {
     ): Response<Void> {
         return getInstance().registerUser(login, password, lastname, firstname, patronymic)
     }
+
+    suspend fun loginUser(login: String, password: String): Response<UserInfo> {
+        return getInstance().loginUser(login, password)
+    }
+
+
 }
