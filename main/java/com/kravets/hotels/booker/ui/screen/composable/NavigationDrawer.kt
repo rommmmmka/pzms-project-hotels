@@ -13,6 +13,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun NavigationDrawer(navController: NavHostController, drawerState: DrawerState) {
     val coroutineScope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
+
+    if (drawerState.isAnimationRunning) {
+        focusManager.clearFocus()
+    }
 
     Column(
         modifier = Modifier

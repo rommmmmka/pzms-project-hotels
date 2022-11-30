@@ -1,5 +1,6 @@
 package com.kravets.hotels.booker.ui.screen.composable
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,6 +19,7 @@ import androidx.navigation.NavController
 import com.kravets.hotels.booker.R
 import com.kravets.hotels.booker.ui.screen.view_model.MainPageViewModel
 import com.kravets.hotels.booker.ui.shared.*
+import com.kravets.hotels.booker.ui.theme.Purple40
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.format.DateTimeFormatter
 
@@ -26,7 +28,6 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MainPage(
     viewModel: MainPageViewModel,
-    navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {
     val displaySnackbarError by viewModel.displaySnackbarError.collectAsState()
@@ -45,7 +46,7 @@ fun MainPage(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SearchPart(viewModel, navController)
+        SearchPart(viewModel)
         ResultsPart(viewModel)
     }
 }
@@ -53,7 +54,7 @@ fun MainPage(
 @ExperimentalCoroutinesApi
 @ExperimentalMaterial3Api
 @Composable
-fun SearchPart(viewModel: MainPageViewModel, navController: NavController) {
+fun SearchPart(viewModel: MainPageViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth(0.9F)
@@ -228,6 +229,7 @@ fun SearchPartButtonSubmit(viewModel: MainPageViewModel) {
     val focusManager = LocalFocusManager.current
 
     OutlinedButton(
+        border = BorderStroke(1.dp, Purple40),
         onClick = {
             focusManager.clearFocus()
             viewModel.onLoginPressed()

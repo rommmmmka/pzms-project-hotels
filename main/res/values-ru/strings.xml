@@ -31,4 +31,22 @@
     <string name="beds_for_two">"Двуместные: "</string>
     <string name="prepayment_required">Требуется предоплата</string>
     <string name="prepayment_not_needed">Без предоплаты</string>
+    <string name="lastname_mandatory">Фамилия*</string>
+    <string name="firstname_mandatory">Имя*</string>
+    <string name="patronymic_mandatory">Отчество (при наличии)</string>
+    <string name="error_allowed_symbols_fio">Разрешаются символы белорусского, русского и английского алфавитов, апостроф, тире и пробел</string>
+    <string name="error_allowed_symbols_log_pass">Разрешаются символы английского алфавита, цифры, тире и подчёркивание</string>
+    <string name="password_mandatory">Пароль*</string>
+    <string name="repeat_password_mandatory">Повторите пароль*</string>
+    <string name="error_allowed_length_6_32">Длина должна быть от 6 до 32 символов</string>
+    <string name="login_mandatory">Логин*</string>
+    <string name="error_passwords_not_the_same">Пароли должны быть одинаковыми</string>
+    <string name="register_action">Зарегистрироваться</string>
+    <string name="error_no_access">Нет доступа</string>
+    <string name="error_invalid_filters">Ошибка при обработке неправильных фильтров</string>
+    <string name="error_form_not_valid">Неправильная форма</string>
+    <string name="error_no_free_rooms">Нет свободных номеров</string>
+    <string name="error_order_does_not_exist">Заказ не существует</string>
+    <string name="error_user_already_exists">Пользователь с таким логином уже существует</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
 </resources>

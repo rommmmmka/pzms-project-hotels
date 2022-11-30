@@ -3,6 +3,7 @@ package com.kravets.hotels.booker.service.api_object
 import com.kravets.hotels.booker.Config
 import com.kravets.hotels.booker.model.entity.CityEntity
 import com.kravets.hotels.booker.service.api.CityApi
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -21,12 +22,7 @@ object CityApiObject {
         return cityApi!!
     }
 
-    suspend fun getCitiesList(): List<CityEntity> {
-        val response = getInstance().getCitiesList()
-        return if (response.isSuccessful) {
-            response.body() ?: emptyList()
-        } else {
-            emptyList()
-        }
+    suspend fun getCitiesList(): Response<List<CityEntity>> {
+        return getInstance().getCitiesList()
     }
 }

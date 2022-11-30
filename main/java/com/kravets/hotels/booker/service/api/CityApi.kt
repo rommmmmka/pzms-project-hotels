@@ -5,6 +5,6 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface CityApi {
-    @GET("api/city/get_list")
+    @GET("api/city/get_list/")
     suspend fun getCitiesList(): Response<List<CityEntity>>
 }

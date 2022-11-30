@@ -31,4 +31,22 @@
     <string name="beds_for_two">"For two persons: "</string>
     <string name="prepayment_required">Prepayment required</string>
     <string name="prepayment_not_needed">Prepeyment is not needed</string>
+    <string name="lastname_mandatory">Lastname*</string>
+    <string name="firstname_mandatory">Firstname*</string>
+    <string name="patronymic_mandatory">Patronymic (if you have one)</string>
+    <string name="error_allowed_symbols_fio">Characters of the Belarusian, Russian and English alphabets, apostrophe, dash and space are allowed</string>
+    <string name="error_allowed_symbols_log_pass">Characters of the English alphabet, numbers, dashes and underscores are allowed</string>
+    <string name="password_mandatory">Password*</string>
+    <string name="repeat_password_mandatory">Repeat password*</string>
+    <string name="error_allowed_length_6_32">The length should be from 6 to 32 characters</string>
+    <string name="login_mandatory">Login*</string>
+    <string name="error_passwords_not_the_same">Passwords must be the same</string>
+    <string name="register_action">Register</string>
+    <string name="error_no_access">No access</string>
+    <string name="error_invalid_filters">Error processing invalid filters</string>
+    <string name="error_form_not_valid">Form is not valid</string>
+    <string name="error_no_free_rooms">No free rooms</string>
+    <string name="error_order_does_not_exist">Order does not exist</string>
+    <string name="error_user_already_exists">User with this login already exists</string>
+    <string name="error_unknown">Unknown error</string>
 </resources>

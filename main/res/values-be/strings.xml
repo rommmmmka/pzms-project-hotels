@@ -31,4 +31,22 @@
     <string name="beds_for_two">"Двумесныя: "</string>
     <string name="prepayment_required">Патрабуецца перадаплата</string>
     <string name="prepayment_not_needed">Без перадаплаты</string>
+    <string name="lastname_mandatory">Прозвішча*</string>
+    <string name="firstname_mandatory">Імя*</string>
+    <string name="patronymic_mandatory">Імя па бацьку (пры наяўнасці)</string>
+    <string name="error_allowed_symbols_fio">Дазваляюцца сімвалы беларускага, рускага і англійскага алфавітаў, апостраф, працяжнік і прабел</string>
+    <string name="error_allowed_symbols_log_pass">Дазваляюцца сімвалы англійскага алфавіту, лічбы, працяжнік і падкрэсліванне</string>
+    <string name="password_mandatory">Пароль*</string>
+    <string name="repeat_password_mandatory">Паўтарыце пароль*</string>
+    <string name="error_allowed_length_6_32">Дліна мае быць ад 6 да 32 сімвалаў</string>
+    <string name="login_mandatory">Логін*</string>
+    <string name="error_passwords_not_the_same">Паролі маюць быць аднолькавымі</string>
+    <string name="register_action">Зарэгістравацца</string>
+    <string name="error_no_access">Няма доступу</string>
+    <string name="error_invalid_filters">Памылка пры апрацоўцы няправільных фільтраў</string>
+    <string name="error_form_not_valid">Няправільная форма</string>
+    <string name="error_no_free_rooms">Няма вольных нумароў</string>
+    <string name="error_order_does_not_exist">Заказ не існуе</string>
+    <string name="error_user_already_exists">Карыстальнік з такім логінам ужо існуе</string>
+    <string name="error_unknown">Невядомая памылка</string>
 </resources>

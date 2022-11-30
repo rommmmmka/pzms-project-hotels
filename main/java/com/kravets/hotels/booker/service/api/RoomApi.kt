@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface RoomApi {
     
-    @GET( "api/room/search")
+    @GET( "api/room/search/")
     suspend fun searchRooms(
         @Query("city") city: Long,
         @Query("adultsCount") adultsCount: Int,

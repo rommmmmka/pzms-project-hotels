@@ -1,3 +1,5 @@
+package com.kravets.hotels.booker.ui
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -9,17 +11,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.kravets.hotels.booker.R
-import com.kravets.hotels.booker.ui.screen.composable.MainPage
-import com.kravets.hotels.booker.ui.screen.composable.NavigationDrawer
-import com.kravets.hotels.booker.ui.screen.composable.TopBar
+import com.kravets.hotels.booker.ui.screen.composable.*
+import com.kravets.hotels.booker.ui.screen.view_model.LoginPageViewModel
 import com.kravets.hotels.booker.ui.screen.view_model.MainPageViewModel
+import com.kravets.hotels.booker.ui.screen.view_model.RegisterPageViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 object Routes {
     const val MainPage = "main_page"
-
+    const val Register = "register"
+    const val Login = "login"
 }
 
 @ExperimentalCoroutinesApi
@@ -61,7 +65,22 @@ fun Navigation() {
                     composable(Routes.MainPage) {
                         MainPage(
                             viewModel = MainPageViewModel(),
-                            navController = navController,
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
+                    composable(Routes.Register) {
+                        RegisterPage(
+                            viewModel = RegisterPageViewModel(navController),
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
+                    composable(Routes.Login + "?login={login}",
+                        arguments = listOf(navArgument("login") { defaultValue = "" })
+                    ) { navBackStackEntry ->
+                        LoginPage(
+                            viewModel = LoginPageViewModel(
+                                navBackStackEntry.arguments?.getString("userId")
+                            ),
                             snackbarHostState = snackbarHostState
                         )
                     }

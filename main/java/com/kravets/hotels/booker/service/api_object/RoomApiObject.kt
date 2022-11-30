@@ -3,6 +3,7 @@ package com.kravets.hotels.booker.service.api_object
 import com.kravets.hotels.booker.Config
 import com.kravets.hotels.booker.model.entity.RoomEntity
 import com.kravets.hotels.booker.service.api.RoomApi
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -23,14 +24,9 @@ object RoomApiObject {
 
     suspend fun searchRooms(
         city: Long, adultsCount: Int, childrenCount: Int, checkInDate: String, checkOutDate: String
-    ): List<RoomEntity> {
-        val response = getInstance().searchRooms(
+    ): Response<List<RoomEntity>> {
+        return getInstance().searchRooms(
             city, adultsCount, childrenCount, checkInDate, checkOutDate
         )
-        return if (response.isSuccessful) {
-            response.body() ?: emptyList()
-        } else {
-            emptyList()
-        }
     }
 }

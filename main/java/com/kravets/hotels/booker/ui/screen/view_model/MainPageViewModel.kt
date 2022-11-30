@@ -17,43 +17,43 @@ import java.time.format.DateTimeFormatter
 
 @ExperimentalCoroutinesApi
 class MainPageViewModel : ViewModel() {
-    private var _citiesList: MutableStateFlow<List<CityEntity>> = MutableStateFlow(emptyList())
+    private val _citiesList: MutableStateFlow<List<CityEntity>> = MutableStateFlow(emptyList())
     val citiesList: StateFlow<List<CityEntity>> = _citiesList
-    private var _isCitiesListLoaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    var isCitiesListLoaded: StateFlow<Boolean> = _isCitiesListLoaded
+    private val _isCitiesListLoaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isCitiesListLoaded: StateFlow<Boolean> = _isCitiesListLoaded
 
-    private var _currentServerDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null)
-    var currentServerDate: StateFlow<LocalDate?> = _currentServerDate
-    private var _isServerDateLoaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _currentServerDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null)
+    val currentServerDate: StateFlow<LocalDate?> = _currentServerDate
+    private val _isServerDateLoaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isServerDateLoaded: StateFlow<Boolean> = _isServerDateLoaded
 
-    var cityId: MutableStateFlow<Long> = MutableStateFlow(1)
-    var checkInDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null)
-    var checkOutDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null)
-    var adultsCount: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue("1"))
-    var childrenCount: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue("0"))
+    val cityId: MutableStateFlow<Long> = MutableStateFlow(1)
+    val checkInDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null)
+    val checkOutDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null)
+    val adultsCount: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue("1"))
+    val childrenCount: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue("0"))
 
-    var adultsCountValidationError: StateFlow<Boolean> =
+    val adultsCountValidationError: StateFlow<Boolean> =
         adultsCount.mapLatest {
             it.text == "" || it.text.toInt() !in 1..30
         }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
-    var childrenCountValidationError: StateFlow<Boolean> =
+    val childrenCountValidationError: StateFlow<Boolean> =
         childrenCount.mapLatest {
             it.text == "" || it.text.toInt() !in 0..30
         }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
-    var displaySnackbarError: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val displaySnackbarError: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    var isCityDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    var isCheckInDatePickerDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    var isCheckOutDatePickerDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isCityDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isCheckInDatePickerDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isCheckOutDatePickerDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    private var _searchResults: MutableStateFlow<List<RoomEntity>> = MutableStateFlow(emptyList())
+    private val _searchResults: MutableStateFlow<List<RoomEntity>> = MutableStateFlow(emptyList())
     val searchResults: StateFlow<List<RoomEntity>> = _searchResults
-    private var _isProcessingSearchRequest: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _isProcessingSearchRequest: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isProcessingSearchRequest: StateFlow<Boolean> = _isProcessingSearchRequest
 
-    private var _isFormValid: StateFlow<Boolean> =
+    private val _isFormValid: StateFlow<Boolean> =
         combine(
             isCitiesListLoaded,
             isServerDateLoaded,
@@ -63,8 +63,11 @@ class MainPageViewModel : ViewModel() {
             v1 && v2 && !v3 && !v4
         }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
-    var isSearchButtonEnabled: StateFlow<Boolean> =
-        combine(isProcessingSearchRequest, _isFormValid) { isProcessingSearchRequest, isFormValid ->
+    val isSearchButtonEnabled: StateFlow<Boolean> =
+        combine(
+            _isProcessingSearchRequest,
+            _isFormValid
+        ) { isProcessingSearchRequest, isFormValid ->
             !isProcessingSearchRequest && isFormValid
         }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
@@ -78,10 +81,14 @@ class MainPageViewModel : ViewModel() {
         viewModelScope.launch {
             while (true) {
                 try {
-                    val citiesList = CityApiObject.getCitiesList()
-                    _citiesList.value = citiesList
-                    _isCitiesListLoaded.value = true
-                    break
+                    val response = CityApiObject.getCitiesList()
+                    if (response.isSuccessful) {
+                        _citiesList.value = response.body() ?: emptyList()
+                        _isCitiesListLoaded.value = true
+                        break
+                    } else {
+                        displaySnackbarError.value = true
+                    }
                 } catch (_: Exception) {
                     displaySnackbarError.value = true
                 }
@@ -93,12 +100,17 @@ class MainPageViewModel : ViewModel() {
         viewModelScope.launch {
             while (true) {
                 try {
-                    val serverDate = DateApiObject.getServerDate()
-                    _currentServerDate.value = serverDate!!
-                    checkInDate.value = serverDate
-                    checkOutDate.value = serverDate.plusDays(1)
-                    _isServerDateLoaded.value = true
-                    break
+                    val response = DateApiObject.getServerDate()
+                    if (response.isSuccessful) {
+                        val serverDate = LocalDate.parse(response.body()!!["currentDate"], DateTimeFormatter.ISO_DATE)
+                        _currentServerDate.value = serverDate
+                        checkInDate.value = serverDate
+                        checkOutDate.value = serverDate.plusDays(1)
+                        _isServerDateLoaded.value = true
+                        break
+                    } else {
+                        displaySnackbarError.value = true
+                    }
                 } catch (_: Exception) {
                     displaySnackbarError.value = true
                 }
@@ -148,14 +160,18 @@ class MainPageViewModel : ViewModel() {
         _isProcessingSearchRequest.value = true
         viewModelScope.launch {
             try {
-                val results = RoomApiObject.searchRooms(
+                val response = RoomApiObject.searchRooms(
                     cityId.value,
                     adultsCount.value.text.toInt(),
                     childrenCount.value.text.toInt(),
                     checkInDate.value!!.format(DateTimeFormatter.ISO_DATE),
                     checkOutDate.value!!.format(DateTimeFormatter.ISO_DATE)
                 )
-                _searchResults.value = results
+                if (response.isSuccessful) {
+                    _searchResults.value = response.body() ?: emptyList()
+                } else {
+                    displaySnackbarError.value = true
+                }
             } catch (_: Exception) {
                 displaySnackbarError.value = true
             }
