@@ -70,4 +70,6 @@
     <string name="drawer_item_admin_rooms">Нумары</string>
     <string name="drawer_item_admin_orders">Заказы</string>
     <string name="drawer_item_admin_users">Карыстальнікі</string>
+    <string name="rooms_count">"Усяго нумароў: "</string>
+    <string name="error_not_logged_in">Для выканання гэтага дзеяння неабходна ўвайсці</string>
 </resources>

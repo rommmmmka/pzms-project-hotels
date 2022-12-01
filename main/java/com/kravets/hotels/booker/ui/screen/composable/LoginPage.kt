@@ -37,7 +37,7 @@ fun LoginPage(viewModel: LoginPageViewModel, snackbarHostState: SnackbarHostStat
 @Composable
 fun DisplaySnackbar(viewModel: LoginPageViewModel, snackbarHostState: SnackbarHostState) {
     val displaySnackbarError by viewModel.displaySnackbarError.collectAsState()
-    val displaySnackbarSuccess by viewModel.displaySnackbarSuccess.collectAsState()
+    val displaySnackbarMessage by viewModel.displaySnackbarMessage.collectAsState()
 
     if (displaySnackbarError != 200) {
         val errorMessage = stringResource(ErrorMessage.getStringId(displaySnackbarError))
@@ -47,11 +47,11 @@ fun DisplaySnackbar(viewModel: LoginPageViewModel, snackbarHostState: SnackbarHo
         }
     }
 
-    if (displaySnackbarSuccess != 0) {
-        val successMessage = stringResource(displaySnackbarSuccess)
+    if (displaySnackbarMessage != 0) {
+        val message = stringResource(displaySnackbarMessage)
         LaunchedEffect(0) {
-            snackbarHostState.showSnackbar(successMessage)
-            viewModel.displaySnackbarSuccess.value = 0
+            snackbarHostState.showSnackbar(message)
+            viewModel.displaySnackbarMessage.value = 0
         }
     }
 }

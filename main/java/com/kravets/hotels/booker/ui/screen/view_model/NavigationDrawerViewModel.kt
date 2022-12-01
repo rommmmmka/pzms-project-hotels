@@ -27,26 +27,6 @@ class NavigationDrawerViewModel(
         dataStore.isAdmin.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun onItemClicked(destination: String) {
-//        var currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
-//        if (currentRoute.indexOf('?') != -1) {
-//            currentRoute = currentRoute.substring(0, currentRoute.indexOf('?'))
-//        }
-//        var newRoute = destination
-//        if (newRoute.indexOf('?') != -1) {
-//            newRoute = newRoute.substring(0, newRoute.indexOf('?'))
-//        }
-//
-//        if (currentRoute != newRoute) {
-//            val v = navController.currentBackStackEntry?.destination?.label
-//            viewModelScope.launch {
-//                navController.navigate(
-//                    route = destination,
-//                    navOptions = navOptions {
-//                        this.launchSingleTop = true
-//                    }
-//                )
-//            }
-//        }
         navigateWithoutStack(navController, viewModelScope, destination)
     }
 
@@ -55,9 +35,9 @@ class NavigationDrawerViewModel(
             dataStore.clear()
             navigateWithoutStack(
                 navController, viewModelScope,
-                destination = "${Routes.MainPage}?success=${R.string.message_successful_signing_out}"
+                destination = "${Routes.MainPage}?message=${R.string.message_successful_signing_out}",
+                redraw = true
             )
-//            navController.navigate("${Routes.MainPage}?success=${R.string.message_successful_signing_out}")
         }
     }
 }

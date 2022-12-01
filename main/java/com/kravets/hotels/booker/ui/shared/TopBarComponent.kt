@@ -1,4 +1,4 @@
-package com.kravets.hotels.booker.ui.screen.composable
+package com.kravets.hotels.booker.ui.shared
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
@@ -17,7 +17,7 @@ import com.kravets.hotels.booker.R
 
 @ExperimentalMaterial3Api
 @Composable
-fun TopBar(
+fun TopBarComponent(
     title: Int,
     description: Int?,
     onNavigationIconClick: () -> Unit

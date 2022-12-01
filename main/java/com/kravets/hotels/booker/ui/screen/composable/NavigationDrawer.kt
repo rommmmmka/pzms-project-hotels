@@ -53,7 +53,7 @@ fun NavigationDrawer(viewModel: NavigationDrawerViewModel, drawerState: DrawerSt
             drawerState = drawerState,
             menuItems = listOf(
                 MenuItem(
-                    id = "main_page?success=0",
+                    id = "main_page",
                     name = stringResource(R.string.drawer_item_main),
                     icon = Icons.Default.Search,
                     disabled = false,

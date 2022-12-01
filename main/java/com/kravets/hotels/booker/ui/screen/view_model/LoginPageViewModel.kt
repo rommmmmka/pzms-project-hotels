@@ -18,11 +18,11 @@ class LoginPageViewModel(
     private val _navController: NavHostController,
     private val _dataStore: DataStore,
     transferredLogin: String?,
-    displaySnackbarSuccess: Int?
+    displaySnackbarMessage: Int?
 ) : ViewModel() {
     val displaySnackbarError: MutableStateFlow<Int> = MutableStateFlow(200)
-    val displaySnackbarSuccess: MutableStateFlow<Int> =
-        MutableStateFlow(displaySnackbarSuccess ?: 0)
+    val displaySnackbarMessage: MutableStateFlow<Int> =
+        MutableStateFlow(displaySnackbarMessage ?: 0)
 
     val login: MutableStateFlow<TextFieldValue> =
         MutableStateFlow(TextFieldValue(transferredLogin ?: ""))
@@ -96,9 +96,8 @@ class LoginPageViewModel(
                     }
                     navigateWithoutStack(
                         _navController, viewModelScope,
-                        destination = "${Routes.MainPage}?success=${R.string.message_successful_signing_in}"
+                        destination = "${Routes.MainPage}?message=${R.string.message_successful_signing_in}"
                     )
-//                    _navController.navigate("${Routes.MainPage}?success=${R.string.message_successful_signing_in}")
                 }
             } catch (_: Exception) {
             }

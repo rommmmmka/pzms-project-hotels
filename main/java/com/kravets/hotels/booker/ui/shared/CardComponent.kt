@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
@@ -37,46 +38,66 @@ fun CardComponent(
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(5.dp)
     ) {
+        CardImageBoxComponent(image, title, secondTitle, thirdTitle)
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 30.dp, vertical = 15.dp)
+        ) {
+            content.invoke()
+        }
+    }
+}
+
+@Composable
+fun CardImageBoxComponent(
+    image: String,
+    title: String? = null,
+    secondTitle: String? = null,
+    thirdTitle: String? = null,
+    paddingBottom: Dp = 0.dp
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1F)
+            .padding(bottom = paddingBottom)
+    ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1F)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(15.dp))
-                    .background(Color.Yellow)
-            )
-            SubcomposeAsyncImage(
-                model = "${Config.baseUrl}uploads/$image",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(15.dp)),
-                loading = {
-                    CircularProgressIndicator()
-                },
-                contentScale = ContentScale.Crop,
-                contentDescription = ""
-            )
+                .fillMaxSize()
+                .clip(RoundedCornerShape(15.dp))
+                .background(Color.Yellow)
+        )
+        SubcomposeAsyncImage(
+            model = "${Config.baseUrl}uploads/$image",
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(15.dp)),
+            loading = {
+                CircularProgressIndicator()
+            },
+            contentScale = ContentScale.Crop,
+            contentDescription = ""
+        )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(15.dp))
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                Color(0xEE000000)
-                            ),
-                            endY = Float.POSITIVE_INFINITY
-                        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(15.dp))
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color(0xEE000000)
+                        ),
+                        endY = Float.POSITIVE_INFINITY
                     )
-                    .padding(30.dp),
-                contentAlignment = Alignment.BottomStart
-            ) {
-                Column {
+                )
+                .padding(30.dp),
+            contentAlignment = Alignment.BottomStart
+        ) {
+            Column {
+                if (title != null) {
                     Text(
                         text = title,
                         style = TextStyle(
@@ -86,6 +107,8 @@ fun CardComponent(
                         ),
                         overflow = TextOverflow.Ellipsis
                     )
+                }
+                if (secondTitle != null) {
                     Text(
                         text = secondTitle,
                         style = TextStyle(
@@ -94,6 +117,8 @@ fun CardComponent(
                             fontSize = 20.sp,
                         )
                     )
+                }
+                if (thirdTitle != null) {
                     Text(
                         text = thirdTitle,
                         style = TextStyle(
@@ -104,12 +129,6 @@ fun CardComponent(
                     )
                 }
             }
-        }
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 30.dp, vertical = 15.dp)
-        ) {
-            content.invoke()
         }
     }
 }
@@ -124,7 +143,7 @@ fun CardTextComponent(text: String) {
 
 @Composable
 
-fun CardTextComponentBold(text: String) {
+fun CardTextBoldComponent(text: String) {
     Text(
         text = text,
         style = TextStyle(

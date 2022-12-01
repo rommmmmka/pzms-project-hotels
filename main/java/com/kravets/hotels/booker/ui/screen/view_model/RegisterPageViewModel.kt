@@ -142,9 +142,8 @@ class RegisterPageViewModel(private val _navController: NavHostController) : Vie
             if (errorCode == 200) {
                 navigateWithoutStack(
                     _navController, viewModelScope,
-                    destination = "${Routes.Login}?login=${login.value.text}&success=${R.string.message_successful_registration}"
+                    destination = "${Routes.Login}?login=${login.value.text}&message=${R.string.message_successful_registration}"
                 )
-//                _navController.navigate("${Routes.Login}?login=${login.value.text}&success=${R.string.message_successful_registration}")
             }
         }
     }

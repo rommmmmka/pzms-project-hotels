@@ -4,11 +4,16 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kravets.hotels.booker.R
+import com.kravets.hotels.booker.misc.ErrorMessage
 import com.kravets.hotels.booker.model.entity.CityEntity
+import com.kravets.hotels.booker.model.entity.HotelEntity
 import com.kravets.hotels.booker.model.entity.RoomEntity
 import com.kravets.hotels.booker.service.api_object.CityApiObject
 import com.kravets.hotels.booker.service.api_object.DateApiObject
+import com.kravets.hotels.booker.service.api_object.OrderApiObject
 import com.kravets.hotels.booker.service.api_object.RoomApiObject
+import com.kravets.hotels.booker.service.other.DataStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -16,10 +21,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @ExperimentalCoroutinesApi
-class MainPageViewModel(successMessage: Int?) : ViewModel() {
-    val displaySnackbarError: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val displaySnackbarSuccess: MutableStateFlow<Int> =
-        MutableStateFlow(successMessage ?: 0)
+class MainPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
+    val displaySnackbar: MutableStateFlow<Int> = MutableStateFlow(message ?: 0)
 
     private val _citiesList: MutableStateFlow<List<CityEntity>> = MutableStateFlow(emptyList())
     val citiesList: StateFlow<List<CityEntity>> = _citiesList
@@ -50,10 +53,15 @@ class MainPageViewModel(successMessage: Int?) : ViewModel() {
     val isCheckInDatePickerDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isCheckOutDatePickerDialogActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
+    private val _searchCheckInDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null)
+    private val _searchCheckOutDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null)
     private val _searchResults: MutableStateFlow<List<RoomEntity>> = MutableStateFlow(emptyList())
     val searchResults: StateFlow<List<RoomEntity>> = _searchResults
     private val _isProcessingSearchRequest: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isProcessingSearchRequest: StateFlow<Boolean> = _isProcessingSearchRequest
+
+    private val _isProcessingOrderRequest: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isProcessingOrderRequest: StateFlow<Boolean> = _isProcessingOrderRequest
 
     private val _isFormValid: StateFlow<Boolean> =
         combine(
@@ -68,10 +76,17 @@ class MainPageViewModel(successMessage: Int?) : ViewModel() {
     val isSearchButtonEnabled: StateFlow<Boolean> =
         combine(
             _isProcessingSearchRequest,
+            _isProcessingOrderRequest,
             _isFormValid
-        ) { isProcessingSearchRequest, isFormValid ->
-            !isProcessingSearchRequest && isFormValid
+        ) { isProcessingSearchRequest, isProcessingOrderRequest, isFormValid ->
+            !isProcessingSearchRequest && !isProcessingOrderRequest && isFormValid
         }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
+    val hotelInfoDialogEntity: MutableStateFlow<HotelEntity?> = MutableStateFlow(null)
+    val hotelInfoDialogDisplay: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    val sessionKey: StateFlow<String> =
+        dataStore.sessionKey.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
 
     init {
@@ -89,10 +104,10 @@ class MainPageViewModel(successMessage: Int?) : ViewModel() {
                         _isCitiesListLoaded.value = true
                         break
                     } else {
-                        displaySnackbarError.value = true
+                        displaySnackbar.value = R.string.error_connecting_to_server
                     }
                 } catch (_: Exception) {
-                    displaySnackbarError.value = true
+                    displaySnackbar.value = R.string.error_connecting_to_server
                 }
             }
         }
@@ -104,17 +119,20 @@ class MainPageViewModel(successMessage: Int?) : ViewModel() {
                 try {
                     val response = DateApiObject.getServerDate()
                     if (response.isSuccessful) {
-                        val serverDate = LocalDate.parse(response.body()!!["currentDate"], DateTimeFormatter.ISO_DATE)
+                        val serverDate = LocalDate.parse(
+                            response.body()!!["currentDate"],
+                            DateTimeFormatter.ISO_DATE
+                        )
                         _currentServerDate.value = serverDate
                         checkInDate.value = serverDate
                         checkOutDate.value = serverDate.plusDays(1)
                         _isServerDateLoaded.value = true
                         break
                     } else {
-                        displaySnackbarError.value = true
+                        displaySnackbar.value = R.string.error_connecting_to_server
                     }
                 } catch (_: Exception) {
-                    displaySnackbarError.value = true
+                    displaySnackbar.value = R.string.error_connecting_to_server
                 }
             }
 
@@ -158,8 +176,11 @@ class MainPageViewModel(successMessage: Int?) : ViewModel() {
         }
     }
 
-    fun onSubmitPressed() {
+    fun onSearchPressed() {
         _isProcessingSearchRequest.value = true
+        _searchCheckInDate.value = checkInDate.value
+        _searchCheckOutDate.value = checkOutDate.value
+        _searchResults.value = emptyList()
         viewModelScope.launch {
             try {
                 val response = RoomApiObject.searchRooms(
@@ -172,12 +193,49 @@ class MainPageViewModel(successMessage: Int?) : ViewModel() {
                 if (response.isSuccessful) {
                     _searchResults.value = response.body() ?: emptyList()
                 } else {
-                    displaySnackbarError.value = true
+                    displaySnackbar.value = R.string.error_connecting_to_server
                 }
             } catch (_: Exception) {
-                displaySnackbarError.value = true
+                displaySnackbar.value = R.string.error_connecting_to_server
             }
             _isProcessingSearchRequest.value = false
         }
+    }
+
+    fun onHotelInfoPressed(hotelEntity: HotelEntity) {
+        hotelInfoDialogEntity.value = hotelEntity
+        hotelInfoDialogDisplay.value = true
+    }
+
+    fun onHotelInfoClose() {
+        hotelInfoDialogDisplay.value = false
+    }
+
+    fun onOrderPressed(roomId: Long) {
+        if (sessionKey.value == "") {
+            displaySnackbar.value = R.string.error_not_logged_in
+            return
+        }
+
+        _isProcessingOrderRequest.value = true
+        viewModelScope.launch {
+            try {
+                val response = OrderApiObject.addOrder(
+                    sessionKey.value,
+                    _searchCheckInDate.value!!,
+                    _searchCheckOutDate.value!!,
+                    roomId
+                )
+                if (response.isSuccessful) {
+                    displaySnackbar.value = R.string.error_allowed_symbols_log_pass
+                } else {
+                    displaySnackbar.value = ErrorMessage.getStringId(response.code())
+                }
+            } catch (_: Exception) {
+                displaySnackbar.value = R.string.error_connecting_to_server
+            }
+            _isProcessingOrderRequest.value = false
+        }
+
     }
 }

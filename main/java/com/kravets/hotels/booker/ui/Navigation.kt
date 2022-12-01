@@ -22,6 +22,7 @@ import com.kravets.hotels.booker.ui.screen.view_model.LoginPageViewModel
 import com.kravets.hotels.booker.ui.screen.view_model.MainPageViewModel
 import com.kravets.hotels.booker.ui.screen.view_model.NavigationDrawerViewModel
 import com.kravets.hotels.booker.ui.screen.view_model.RegisterPageViewModel
+import com.kravets.hotels.booker.ui.shared.TopBarComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
@@ -62,7 +63,7 @@ fun Navigation() {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
-                TopBar(
+                TopBarComponent(
                     title = topBarName.value.first,
                     description = topBarName.value.second,
                     onNavigationIconClick = {
@@ -80,17 +81,18 @@ fun Navigation() {
                     modifier = Modifier.background(MaterialTheme.colorScheme.background)
                 ) {
                     composable(Routes.Start) {
-                        navigateWithoutStack(navController, coroutineScope, Routes.MainPage + "?success=0")
+                        navigateWithoutStack(navController, coroutineScope, Routes.MainPage + "?message=0")
                     }
 
                     composable(
-                        route = Routes.MainPage + "?success={success}",
-                        arguments = listOf(navArgument("success") { defaultValue = 0 })
+                        route = Routes.MainPage + "?message={message}",
+                        arguments = listOf(navArgument("message") { defaultValue = 0 })
                     ) { navBackStackEntry ->
                         topBarName.value = TopBarNames.MainPage
                         MainPage(
                             viewModel = MainPageViewModel(
-                                navBackStackEntry.arguments?.getInt("success")
+                                dataStore,
+                                navBackStackEntry.arguments?.getInt("message")
                             ),
                             snackbarHostState = snackbarHostState,
                         )
@@ -105,10 +107,10 @@ fun Navigation() {
                     }
 
                     composable(
-                        route = Routes.Login + "?login={login}&success={success}",
+                        route = Routes.Login + "?login={login}&message={message}",
                         arguments = listOf(
                             navArgument("login") { defaultValue = "" },
-                            navArgument("success") { defaultValue = 0 }
+                            navArgument("message") { defaultValue = 0 }
                         )
                     ) { navBackStackEntry ->
                         topBarName.value = TopBarNames.Login
@@ -116,7 +118,7 @@ fun Navigation() {
                             viewModel = LoginPageViewModel(
                                 navController, dataStore,
                                 navBackStackEntry.arguments?.getString("login"),
-                                navBackStackEntry.arguments?.getInt("success")
+                                navBackStackEntry.arguments?.getInt("message")
                             ),
                             snackbarHostState = snackbarHostState
                         )

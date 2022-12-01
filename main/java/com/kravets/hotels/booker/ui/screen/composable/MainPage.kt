@@ -29,21 +29,13 @@ fun MainPage(
     viewModel: MainPageViewModel,
     snackbarHostState: SnackbarHostState
 ) {
-    val displaySnackbarError by viewModel.displaySnackbarError.collectAsState()
-    val displaySnackbarSuccess by viewModel.displaySnackbarSuccess.collectAsState()
+    val displaySnackbar by viewModel.displaySnackbar.collectAsState()
 
-    if (displaySnackbarError) {
-        val snackbarMessage = stringResource(R.string.error_connecting_to_server)
-        LaunchedEffect(displaySnackbarError) {
+    if (displaySnackbar != 0) {
+        val snackbarMessage = stringResource(displaySnackbar)
+        LaunchedEffect(displaySnackbar) {
             snackbarHostState.showSnackbar(snackbarMessage)
-            viewModel.displaySnackbarError.value = false
-        }
-    }
-    if (displaySnackbarSuccess != 0) {
-        val snackbarMessage = stringResource(displaySnackbarSuccess)
-        LaunchedEffect(displaySnackbarSuccess) {
-            snackbarHostState.showSnackbar(snackbarMessage)
-            viewModel.displaySnackbarSuccess.value = 0
+            viewModel.displaySnackbar.value = 0
         }
     }
 
@@ -56,6 +48,8 @@ fun MainPage(
         SearchPart(viewModel)
         ResultsPart(viewModel)
     }
+
+    HotelInfoDialog(viewModel)
 }
 
 @ExperimentalCoroutinesApi
@@ -239,7 +233,7 @@ fun SearchPartButtonSubmit(viewModel: MainPageViewModel) {
         border = BorderStroke(1.dp, Purple40),
         onClick = {
             focusManager.clearFocus()
-            viewModel.onSubmitPressed()
+            viewModel.onSearchPressed()
         },
         enabled = isSearchButtonEnabled
     ) {
@@ -264,6 +258,9 @@ fun ResultsPart(viewModel: MainPageViewModel) {
 @Composable
 fun SearchResults(viewModel: MainPageViewModel) {
     val searchResults by viewModel.searchResults.collectAsState()
+    val isProcessingOrderRequest by viewModel.isProcessingOrderRequest.collectAsState()
+
+    val focusManager = LocalFocusManager.current
 
     searchResults.forEach {
         CardComponent(
@@ -280,15 +277,15 @@ fun SearchResults(viewModel: MainPageViewModel) {
                 CardTextComponent(it.description)
                 Spacer(Modifier.height(5.dp))
             }
-            CardTextComponentBold(stringResource(R.string.limit_people_header))
+            CardTextBoldComponent(stringResource(R.string.limit_people_header))
             CardTextComponent(stringResource(R.string.limit_adults) + it.adultsLimit)
             CardTextComponent(stringResource(R.string.limit_children) + (it.guestsLimit - it.adultsLimit))
             Spacer(Modifier.height(5.dp))
-            CardTextComponentBold(stringResource(R.string.beds))
+            CardTextBoldComponent(stringResource(R.string.beds))
             CardTextComponent(stringResource(R.string.beds_for_one) + it.bedsForOnePersonCount)
             CardTextComponent(stringResource(R.string.beds_for_two) + it.bedsForTwoPersonsCount)
             Spacer(Modifier.height(5.dp))
-            CardTextComponentBold(
+            CardTextBoldComponent(
                 stringResource(
                     if (it.prepaymentRequired) R.string.prepayment_required
                     else R.string.prepayment_not_needed
@@ -300,14 +297,65 @@ fun SearchResults(viewModel: MainPageViewModel) {
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextButton(onClick = { /*TODO*/ }) {
+                ElevatedButton(
+                    onClick = {
+                        focusManager.clearFocus()
+                        viewModel.onHotelInfoPressed(it.hotel)
+                    }
+                ) {
                     Text("Гатэль: " + it.hotel.name)
                 }
-                ElevatedButton(onClick = { /*TODO*/ }) {
+//                var animation
+                ElevatedButton(
+                    onClick = {
+                        focusManager.clearFocus()
+                        viewModel.onOrderPressed(it.id)
+                    },
+                    enabled = !isProcessingOrderRequest
+                ) {
                     Text("Заказаць")
                 }
             }
-
         }
     }
+}
+
+@ExperimentalCoroutinesApi
+@Composable
+fun HotelInfoDialog(viewModel: MainPageViewModel) {
+    val hotelInfoDialogEntity by viewModel.hotelInfoDialogEntity.collectAsState()
+    val hotelInfoDialogDisplay by viewModel.hotelInfoDialogDisplay.collectAsState()
+
+    if (hotelInfoDialogDisplay) {
+        AlertDialog(
+            onDismissRequest = { viewModel.onHotelInfoClose() },
+            text = {
+                Column {
+                    CardImageBoxComponent(
+                        image = hotelInfoDialogEntity!!.coverPhoto,
+                        secondTitle = hotelInfoDialogEntity!!.name,
+                        paddingBottom = 15.dp
+                    )
+                    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+                        CardTextComponent(hotelInfoDialogEntity!!.description)
+                        Spacer(Modifier.height(5.dp))
+                        Row {
+                            CardTextBoldComponent(stringResource(R.string.rooms_count))
+                            CardTextComponent(hotelInfoDialogEntity!!.roomsCount.toString())
+                        }
+
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(
+                    onClick = { viewModel.onHotelInfoClose() }
+                ) {
+                    Text("Закрыць!!!")
+                }
+            }
+        )
+    }
+
 }

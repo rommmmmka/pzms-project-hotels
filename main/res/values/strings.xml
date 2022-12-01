@@ -70,4 +70,6 @@
     <string name="drawer_item_admin_rooms">Rooms</string>
     <string name="drawer_item_admin_orders">Orders</string>
     <string name="drawer_item_admin_users">Users</string>
+    <string name="rooms_count">"Rooms count: "</string>
+    <string name="error_not_logged_in">You need to sign in to do this</string>
 </resources>
