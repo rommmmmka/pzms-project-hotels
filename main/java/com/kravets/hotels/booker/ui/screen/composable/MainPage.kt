@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -25,19 +26,8 @@ import java.time.format.DateTimeFormatter
 @ExperimentalCoroutinesApi
 @ExperimentalMaterial3Api
 @Composable
-fun MainPage(
-    viewModel: MainPageViewModel,
-    snackbarHostState: SnackbarHostState
-) {
-    val displaySnackbar by viewModel.displaySnackbar.collectAsState()
-
-    if (displaySnackbar != 0) {
-        val snackbarMessage = stringResource(displaySnackbar)
-        LaunchedEffect(displaySnackbar) {
-            snackbarHostState.showSnackbar(snackbarMessage)
-            viewModel.displaySnackbar.value = 0
-        }
-    }
+fun MainPage(viewModel: MainPageViewModel, snackbarHostState: SnackbarHostState) {
+    DisplaySnackbar(viewModel, snackbarHostState)
 
     Column(
         modifier = Modifier
@@ -50,6 +40,20 @@ fun MainPage(
     }
 
     HotelInfoDialog(viewModel)
+}
+
+@ExperimentalCoroutinesApi
+@Composable
+fun DisplaySnackbar(viewModel: MainPageViewModel, snackbarHostState: SnackbarHostState) {
+    val displaySnackbarMessage by viewModel.displaySnackbarMessage.collectAsState()
+
+    if (displaySnackbarMessage != 0) {
+        val snackbarMessage = stringResource(displaySnackbarMessage)
+        LaunchedEffect(displaySnackbarMessage) {
+            snackbarHostState.showSnackbar(snackbarMessage)
+            viewModel.displaySnackbarMessage.value = 0
+        }
+    }
 }
 
 @ExperimentalCoroutinesApi
@@ -303,9 +307,9 @@ fun SearchResults(viewModel: MainPageViewModel) {
                         viewModel.onHotelInfoPressed(it.hotel)
                     }
                 ) {
-                    Text("Гатэль: " + it.hotel.name)
+                    Text(stringResource(R.string.hotel) + it.hotel.name)
                 }
-//                var animation
+                Spacer(Modifier.height(8.dp))
                 ElevatedButton(
                     onClick = {
                         focusManager.clearFocus()
@@ -313,7 +317,7 @@ fun SearchResults(viewModel: MainPageViewModel) {
                     },
                     enabled = !isProcessingOrderRequest
                 ) {
-                    Text("Заказаць")
+                    Text(stringResource(R.string.action_order))
                 }
             }
         }
@@ -336,14 +340,8 @@ fun HotelInfoDialog(viewModel: MainPageViewModel) {
                         secondTitle = hotelInfoDialogEntity!!.name,
                         paddingBottom = 15.dp
                     )
-                    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+                    Box(modifier = Modifier.padding(horizontal = 10.dp)) {
                         CardTextComponent(hotelInfoDialogEntity!!.description)
-                        Spacer(Modifier.height(5.dp))
-                        Row {
-                            CardTextBoldComponent(stringResource(R.string.rooms_count))
-                            CardTextComponent(hotelInfoDialogEntity!!.roomsCount.toString())
-                        }
-
                     }
                 }
             },
@@ -352,10 +350,9 @@ fun HotelInfoDialog(viewModel: MainPageViewModel) {
                 TextButton(
                     onClick = { viewModel.onHotelInfoClose() }
                 ) {
-                    Text("Закрыць!!!")
+                    Text(stringResource(R.string.close))
                 }
             }
         )
     }
-
 }

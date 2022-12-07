@@ -25,10 +25,10 @@ import com.kravets.hotels.booker.Config
 
 @Composable
 fun CardComponent(
-    image: String,
-    title: String,
-    secondTitle: String,
-    thirdTitle: String,
+    image: String? = null,
+    title: String? = null,
+    secondTitle: String? = null,
+    thirdTitle: String? = null,
     content: @Composable () -> Unit
 ) {
     Card(
@@ -38,7 +38,9 @@ fun CardComponent(
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(5.dp)
     ) {
-        CardImageBoxComponent(image, title, secondTitle, thirdTitle)
+        if (image != null) {
+            CardImageBoxComponent(image, title, secondTitle, thirdTitle)
+        }
         Column(
             modifier = Modifier
                 .padding(horizontal = 30.dp, vertical = 15.dp)
@@ -134,19 +136,31 @@ fun CardImageBoxComponent(
 }
 
 @Composable
-fun CardTextComponent(text: String) {
+fun CardHeaderComponent(text: String) {
     Text(
         text = text,
-        style = TextStyle(fontSize = 15.sp)
+        style = TextStyle(
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+        )
+    )
+}
+
+@Composable
+fun CardTextComponent(text: String, color: Color = Color.Black) {
+    Text(
+        text = text,
+        style = TextStyle(color = color, fontSize = 15.sp)
     )
 }
 
 @Composable
 
-fun CardTextBoldComponent(text: String) {
+fun CardTextBoldComponent(text: String, color: Color = Color.Black) {
     Text(
         text = text,
         style = TextStyle(
+            color = color,
             fontWeight = FontWeight.Bold,
             fontSize = 15.sp
         )

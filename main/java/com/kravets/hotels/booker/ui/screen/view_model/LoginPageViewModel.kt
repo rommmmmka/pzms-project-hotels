@@ -18,11 +18,11 @@ class LoginPageViewModel(
     private val _navController: NavHostController,
     private val _dataStore: DataStore,
     transferredLogin: String?,
-    displaySnackbarMessage: Int?
+    message: Int?
 ) : ViewModel() {
     val displaySnackbarError: MutableStateFlow<Int> = MutableStateFlow(200)
     val displaySnackbarMessage: MutableStateFlow<Int> =
-        MutableStateFlow(displaySnackbarMessage ?: 0)
+        MutableStateFlow(message ?: 0)
 
     val login: MutableStateFlow<TextFieldValue> =
         MutableStateFlow(TextFieldValue(transferredLogin ?: ""))

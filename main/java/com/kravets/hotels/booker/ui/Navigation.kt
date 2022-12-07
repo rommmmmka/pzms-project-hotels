@@ -3,6 +3,7 @@ package com.kravets.hotels.booker.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,10 +20,7 @@ import com.kravets.hotels.booker.R
 import com.kravets.hotels.booker.misc.navigateWithoutStack
 import com.kravets.hotels.booker.service.other.DataStore
 import com.kravets.hotels.booker.ui.screen.composable.*
-import com.kravets.hotels.booker.ui.screen.view_model.LoginPageViewModel
-import com.kravets.hotels.booker.ui.screen.view_model.MainPageViewModel
-import com.kravets.hotels.booker.ui.screen.view_model.NavigationDrawerViewModel
-import com.kravets.hotels.booker.ui.screen.view_model.RegisterPageViewModel
+import com.kravets.hotels.booker.ui.screen.view_model.*
 import com.kravets.hotels.booker.ui.shared.TopBarComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -32,14 +31,17 @@ object Routes {
     const val MainPage = "main_page"
     const val Register = "register"
     const val Login = "login"
+    const val Orders = "orders"
 }
 
 object TopBarNames {
     val MainPage: Pair<Int, Int?> = Pair(R.string.app_name, R.string.app_description)
     val Register: Pair<Int, Int?> = Pair(R.string.tab_sign_up, null)
     val Login: Pair<Int, Int?> = Pair(R.string.tab_sign_in, null)
+    val Orders: Pair<Int, Int?> = Pair(R.string.tab_orders, null)
 }
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @ExperimentalMaterial3Api
 @Composable
@@ -81,7 +83,7 @@ fun Navigation() {
                     modifier = Modifier.background(MaterialTheme.colorScheme.background)
                 ) {
                     composable(Routes.Start) {
-                        navigateWithoutStack(navController, coroutineScope, Routes.MainPage + "?message=0")
+                        navigateWithoutStack(navController, coroutineScope, Routes.MainPage)
                     }
 
                     composable(
@@ -91,7 +93,7 @@ fun Navigation() {
                         topBarName.value = TopBarNames.MainPage
                         MainPage(
                             viewModel = MainPageViewModel(
-                                dataStore,
+                                navController, dataStore,
                                 navBackStackEntry.arguments?.getInt("message")
                             ),
                             snackbarHostState = snackbarHostState,
@@ -123,6 +125,24 @@ fun Navigation() {
                             snackbarHostState = snackbarHostState
                         )
                     }
+
+                    composable(
+                        route = Routes.Orders + "?message={message}",
+                        arguments = listOf(
+                            navArgument("message") { defaultValue = 0 }
+                        )
+                    ) { navBackStackEntry ->
+                        topBarName.value = TopBarNames.Orders
+                        OrdersPage(
+                            viewModel = OrdersPageViewModel(
+                                dataStore,
+                                navBackStackEntry.arguments?.getInt("message")
+                            ),
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
+
+
                 }
             }
         }

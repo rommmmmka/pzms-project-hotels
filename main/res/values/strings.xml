@@ -72,4 +72,17 @@
     <string name="drawer_item_admin_users">Users</string>
     <string name="rooms_count">"Rooms count: "</string>
     <string name="error_not_logged_in">You need to sign in to do this</string>
+    <string name="tab_orders">Orders</string>
+    <string name="message_order_added_successfully">Order added successfully</string>
+    <string name="close">Close</string>
+    <string name="error_cant_delete_order">Contact the hotel to cancel the order that was accepted or payed for</string>
+    <string name="order_n">Order №</string>
+    <string name="order_price">"Price: "</string>
+    <string name="roubles">roubles</string>
+    <string name="order_status">"Status: "</string>
+    <string name="order_autodelete">Auto-delete:</string>
+    <string name="hotel">"Hotel: "</string>
+    <string name="room">"Room: "</string>
+    <string name="action_pay">Pay</string>
+    <string name="action_order">Order</string>
 </resources>

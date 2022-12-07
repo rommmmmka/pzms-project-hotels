@@ -4,8 +4,10 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.kravets.hotels.booker.R
 import com.kravets.hotels.booker.misc.ErrorMessage
+import com.kravets.hotels.booker.misc.navigateWithoutStack
 import com.kravets.hotels.booker.model.entity.CityEntity
 import com.kravets.hotels.booker.model.entity.HotelEntity
 import com.kravets.hotels.booker.model.entity.RoomEntity
@@ -14,6 +16,7 @@ import com.kravets.hotels.booker.service.api_object.DateApiObject
 import com.kravets.hotels.booker.service.api_object.OrderApiObject
 import com.kravets.hotels.booker.service.api_object.RoomApiObject
 import com.kravets.hotels.booker.service.other.DataStore
+import com.kravets.hotels.booker.ui.Routes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -21,8 +24,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @ExperimentalCoroutinesApi
-class MainPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
-    val displaySnackbar: MutableStateFlow<Int> = MutableStateFlow(message ?: 0)
+class MainPageViewModel(
+    private val _navController: NavHostController,
+    dataStore: DataStore,
+    message: Int?
+) : ViewModel() {
+    val displaySnackbarMessage: MutableStateFlow<Int> = MutableStateFlow(message ?: 0)
 
     private val _citiesList: MutableStateFlow<List<CityEntity>> = MutableStateFlow(emptyList())
     val citiesList: StateFlow<List<CityEntity>> = _citiesList
@@ -104,10 +111,10 @@ class MainPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
                         _isCitiesListLoaded.value = true
                         break
                     } else {
-                        displaySnackbar.value = R.string.error_connecting_to_server
+                        displaySnackbarMessage.value = R.string.error_connecting_to_server
                     }
                 } catch (_: Exception) {
-                    displaySnackbar.value = R.string.error_connecting_to_server
+                    displaySnackbarMessage.value = R.string.error_connecting_to_server
                 }
             }
         }
@@ -129,10 +136,10 @@ class MainPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
                         _isServerDateLoaded.value = true
                         break
                     } else {
-                        displaySnackbar.value = R.string.error_connecting_to_server
+                        displaySnackbarMessage.value = R.string.error_connecting_to_server
                     }
                 } catch (_: Exception) {
-                    displaySnackbar.value = R.string.error_connecting_to_server
+                    displaySnackbarMessage.value = R.string.error_connecting_to_server
                 }
             }
 
@@ -193,10 +200,10 @@ class MainPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
                 if (response.isSuccessful) {
                     _searchResults.value = response.body() ?: emptyList()
                 } else {
-                    displaySnackbar.value = R.string.error_connecting_to_server
+                    displaySnackbarMessage.value = R.string.error_connecting_to_server
                 }
             } catch (_: Exception) {
-                displaySnackbar.value = R.string.error_connecting_to_server
+                displaySnackbarMessage.value = R.string.error_connecting_to_server
             }
             _isProcessingSearchRequest.value = false
         }
@@ -213,7 +220,7 @@ class MainPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
 
     fun onOrderPressed(roomId: Long) {
         if (sessionKey.value == "") {
-            displaySnackbar.value = R.string.error_not_logged_in
+            displaySnackbarMessage.value = R.string.error_not_logged_in
             return
         }
 
@@ -227,12 +234,15 @@ class MainPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
                     roomId
                 )
                 if (response.isSuccessful) {
-                    displaySnackbar.value = R.string.error_allowed_symbols_log_pass
+                    navigateWithoutStack(
+                        _navController, viewModelScope,
+                        "${Routes.Orders}?message=${R.string.message_order_added_successfully}"
+                    )
                 } else {
-                    displaySnackbar.value = ErrorMessage.getStringId(response.code())
+                    displaySnackbarMessage.value = ErrorMessage.getStringId(response.code())
                 }
             } catch (_: Exception) {
-                displaySnackbar.value = R.string.error_connecting_to_server
+                displaySnackbarMessage.value = R.string.error_connecting_to_server
             }
             _isProcessingOrderRequest.value = false
         }

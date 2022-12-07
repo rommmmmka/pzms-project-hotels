@@ -72,4 +72,17 @@
     <string name="drawer_item_admin_users">Карыстальнікі</string>
     <string name="rooms_count">"Усяго нумароў: "</string>
     <string name="error_not_logged_in">Для выканання гэтага дзеяння неабходна ўвайсці</string>
+    <string name="tab_orders">Заказы</string>
+    <string name="message_order_added_successfully">Заказ паспяхова дабаўлены</string>
+    <string name="close">Закрыць</string>
+    <string name="error_cant_delete_order">Каб скасаваць заказ, які быў прыняты ці аплачаны, звярніцеся ў гатэль</string>
+    <string name="order_n">Заказ №</string>
+    <string name="order_price">"Кошт заказу: "</string>
+    <string name="roubles">" руб."</string>
+    <string name="order_status">"Статус заказу: "</string>
+    <string name="order_autodelete">Аўтавыдаленне заказу:</string>
+    <string name="hotel">"Гатэль: "</string>
+    <string name="room">"Нумар: "</string>
+    <string name="action_pay">Аплаціць</string>
+    <string name="action_order">Заказаць</string>
 </resources>
