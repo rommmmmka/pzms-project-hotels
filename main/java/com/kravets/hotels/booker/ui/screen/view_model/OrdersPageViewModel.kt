@@ -1,10 +1,6 @@
 package com.kravets.hotels.booker.ui.screen.view_model
 
-import android.content.Intent
-import android.net.Uri
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat.startActivity
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kravets.hotels.booker.R
@@ -13,6 +9,7 @@ import com.kravets.hotels.booker.model.entity.OrderEntity
 import com.kravets.hotels.booker.model.entity.RoomEntity
 import com.kravets.hotels.booker.service.api_object.OrderApiObject
 import com.kravets.hotels.booker.service.other.DataStore
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -32,6 +29,8 @@ class OrdersPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
     val hotelInfoDialogDisplay: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val roomInfoDialogEntity: MutableStateFlow<RoomEntity?> = MutableStateFlow(null)
     val roomInfoDialogDisplay: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    val refreshing: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     init {
         getOrdersList()
@@ -74,7 +73,7 @@ class OrdersPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
         roomInfoDialogDisplay.value = false
     }
 
-    fun removeOrder(orderEntity: OrderEntity) : Boolean {
+    fun removeOrder(orderEntity: OrderEntity): Boolean {
         return if (orderEntity.status.id > 2) {
             displaySnackbarMessage.value = R.string.error_cant_delete_order
             false
@@ -85,9 +84,19 @@ class OrdersPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
                 } catch (_: Exception) {
                     displaySnackbarMessage.value = R.string.error_connecting_to_server
                 }
-                getOrdersList()
             }
             true
+        }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            refreshing.value = true
+
+            getOrdersList()
+
+            delay(300)
+            refreshing.value = false
         }
     }
 }

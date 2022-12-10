@@ -8,6 +8,7 @@ import com.kravets.hotels.booker.R
 import com.kravets.hotels.booker.misc.navigateWithoutStack
 import com.kravets.hotels.booker.service.other.DataStore
 import com.kravets.hotels.booker.ui.Routes
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -26,11 +27,15 @@ class NavigationDrawerViewModel(
     val isAdmin: StateFlow<Boolean> =
         dataStore.isAdmin.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    val activateCloseDrawerAnimation: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
     fun onItemClicked(destination: String) {
+        activateCloseDrawerAnimation.value = true
         navigateWithoutStack(navController, viewModelScope, destination)
     }
 
     fun onLogoutClicked() {
+        activateCloseDrawerAnimation.value = true
         viewModelScope.launch {
             dataStore.clear()
             navigateWithoutStack(

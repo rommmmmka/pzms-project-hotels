@@ -10,15 +10,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,11 +39,18 @@ import java.time.format.DateTimeFormatter
 @ExperimentalCoroutinesApi
 @Composable
 fun OrdersPage(viewModel: OrdersPageViewModel, snackbarHostState: SnackbarHostState) {
+    val refreshing by viewModel.refreshing.collectAsState()
+
+    val pullRefreshState = rememberPullRefreshState(refreshing, viewModel::refresh)
+
     DisplaySnackbar(viewModel, snackbarHostState)
     HotelInfoDialog(viewModel)
     RoomInfoDialog(viewModel)
 
-    DisplayContent(viewModel)
+    Box(Modifier.pullRefresh(pullRefreshState)) {
+        DisplayContent(viewModel)
+        PullRefreshIndicator(refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
+    }
 
 }
 
@@ -78,121 +85,126 @@ fun DisplayContent(viewModel: OrdersPageViewModel) {
             Spacer(Modifier.height(15.dp))
         }
         items(ordersList) {
+            var elementRemoved by remember { mutableStateOf(false) }
             val dismissState = rememberDismissState(
                 confirmStateChange = { dismissValue ->
                     if (dismissValue == DismissValue.DismissedToStart) {
-                        viewModel.removeOrder(it)
+                        elementRemoved = viewModel.removeOrder(it)
+                        elementRemoved
                     } else {
                         false
                     }
                 }
             )
-            SwipeToDismiss(
-                state = dismissState,
-                directions = setOf(DismissDirection.EndToStart),
-                background = {
-                    if (dismissState.dismissDirection == DismissDirection.EndToStart) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 20.dp)
-                                .clip(RoundedCornerShape(15.dp))
-                                .background(DarkRed)
-                        ) {
-                            Icon(
+            if (!elementRemoved) {
+                SwipeToDismiss(
+                    state = dismissState,
+                    directions = setOf(DismissDirection.EndToStart),
+                    background = {
+                        if (dismissState.dismissDirection == DismissDirection.EndToStart) {
+                            Box(
                                 modifier = Modifier
-                                    .padding(end = 15.dp)
-                                    .align(Alignment.CenterEnd),
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "",
-                                tint = Color.White
+                                    .fillMaxSize()
+                                    .padding(bottom = 20.dp)
+                                    .clip(RoundedCornerShape(15.dp))
+                                    .background(DarkRed)
+                            ) {
+                                Icon(
+                                    modifier = Modifier
+                                        .padding(end = 15.dp)
+                                        .align(Alignment.CenterEnd),
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                    },
+                    dismissThresholds = {
+                        FractionalThreshold(0.4F)
+                    }
+                ) {
+                    CardComponent {
+                        CardHeaderComponent(stringResource(R.string.order_n) + it.id)
+                        Spacer(Modifier.height(5.dp))
+                        Row {
+                            CardTextBoldComponent(stringResource(R.string.check_in_date) + ": ")
+                            CardTextComponent(it.checkInDate)
+                        }
+                        Row {
+                            CardTextBoldComponent(stringResource(R.string.check_out_date) + ": ")
+                            CardTextComponent(it.checkOutDate)
+                        }
+                        Spacer(Modifier.height(5.dp))
+                        Row {
+                            CardTextBoldComponent(stringResource(R.string.order_price))
+                            CardTextComponent(it.cost.toString() + stringResource(R.string.roubles))
+                        }
+                        Spacer(Modifier.height(5.dp))
+                        Row {
+                            CardTextBoldComponent(stringResource(R.string.order_status))
+                            CardTextBoldComponent(
+                                it.status.name,
+                                Color(("FF" + it.status.color.substring(1).uppercase()).toLong(16))
                             )
                         }
-                    }
-                },
-                dismissThresholds = {
-                    FractionalThreshold(0.4F)
-                }
-            ) {
-                CardComponent {
-                    CardHeaderComponent(stringResource(R.string.order_n) + it.id)
-                    Spacer(Modifier.height(5.dp))
-                    Row {
-                        CardTextBoldComponent(stringResource(R.string.check_in_date) + ": ")
-                        CardTextComponent(it.checkInDate)
-                    }
-                    Row {
-                        CardTextBoldComponent(stringResource(R.string.check_out_date) + ": ")
-                        CardTextComponent(it.checkOutDate)
-                    }
-                    Spacer(Modifier.height(5.dp))
-                    Row {
-                        CardTextBoldComponent(stringResource(R.string.order_price))
-                        CardTextComponent(it.cost.toString() + stringResource(R.string.roubles))
-                    }
-                    Spacer(Modifier.height(5.dp))
-                    Row {
-                        CardTextBoldComponent(stringResource(R.string.order_status))
-                        CardTextBoldComponent(
-                            it.status.name,
-                            Color(("FF" + it.status.color.substring(1).uppercase()).toLong(16))
-                        )
-                    }
-                    if (LocalDateTime.parse(
-                            it.expireDateTime,
-                            DateTimeFormatter.ISO_LOCAL_DATE_TIME
-                        ).year != 999999999
-                    ) {
-                        CardTextBoldComponent(stringResource(R.string.order_autodelete))
-                        CardTextComponent("   " + it.expireDateTime.replace("T", " "))
-                    }
-                    Spacer(Modifier.height(5.dp))
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        ElevatedButton(
-                            onClick = {
-                                focusManager.clearFocus()
-                                viewModel.onHotelInfoPressed(it.room.hotel)
-                            }
+                        if (LocalDateTime.parse(
+                                it.expireDateTime,
+                                DateTimeFormatter.ISO_LOCAL_DATE_TIME
+                            ).year != 999999999
                         ) {
-                            Text(stringResource(R.string.hotel) + it.room.hotel.name)
+                            CardTextBoldComponent(stringResource(R.string.order_autodelete))
+                            CardTextComponent("   " + it.expireDateTime.replace("T", " "))
                         }
-                        ElevatedButton(
-                            onClick = {
-                                focusManager.clearFocus()
-                                viewModel.onRoomInfoPressed(it.room)
-                            }
+                        Spacer(Modifier.height(5.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(stringResource(R.string.room) + it.room.name)
-                        }
-                        if (it.status.id == 2L) {
-                            Spacer(Modifier.height(8.dp))
                             ElevatedButton(
                                 onClick = {
                                     focusManager.clearFocus()
-
-                                    val baseLink = try {
-                                        context.packageManager.getPackageInfo("org.telegram.messenger", 0)
-                                        "tg://"
-                                    } catch (_ : Exception) {
-                                        "https://t.me/"
-                                    }
-                                    val urlIntent = Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse("${baseLink}booker_payment_bot?start=${it.id}")
-                                    )
-                                    context.startActivity(urlIntent)
+                                    viewModel.onHotelInfoPressed(it.room.hotel)
                                 }
                             ) {
-                                Text(stringResource(R.string.action_pay))
+                                Text(stringResource(R.string.hotel) + it.room.hotel.name)
+                            }
+                            ElevatedButton(
+                                onClick = {
+                                    focusManager.clearFocus()
+                                    viewModel.onRoomInfoPressed(it.room)
+                                }
+                            ) {
+                                Text(stringResource(R.string.room) + it.room.name)
+                            }
+                            if (it.status.id == 2L) {
+                                Spacer(Modifier.height(8.dp))
+                                ElevatedButton(
+                                    onClick = {
+                                        focusManager.clearFocus()
+
+                                        val baseLink = try {
+                                            context.packageManager.getPackageInfo("org.telegram.messenger", 0)
+                                            "tg://"
+                                        } catch (_ : Exception) {
+                                            "https://t.me/"
+                                        }
+                                        val urlIntent = Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse("${baseLink}booker_payment_bot?start=${it.id}")
+                                        )
+                                        context.startActivity(urlIntent)
+                                    }
+                                ) {
+                                    Text(stringResource(R.string.action_pay))
+                                }
                             }
                         }
                     }
                 }
             }
+
         }
     }
 }

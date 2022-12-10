@@ -10,10 +10,7 @@ import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,28 +26,25 @@ import com.kravets.hotels.booker.model.other.MenuItem
 import com.kravets.hotels.booker.ui.screen.view_model.NavigationDrawerViewModel
 import com.kravets.hotels.booker.ui.theme.Purple40
 import com.kravets.hotels.booker.ui.theme.Purple80
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
 fun NavigationDrawer(viewModel: NavigationDrawerViewModel, drawerState: DrawerState) {
-    val coroutineScope = rememberCoroutineScope()
 
     if (drawerState.isAnimationRunning) {
         LocalFocusManager.current.clearFocus()
     }
+
+    CloseDrawer(viewModel, drawerState)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        DrawerHeader(viewModel, coroutineScope, drawerState)
+        DrawerHeader(viewModel)
         DrawerBody(
             viewModel = viewModel,
-            coroutineScope = coroutineScope,
-            drawerState = drawerState,
             menuItems = listOf(
                 MenuItem(
                     id = "main_page",
@@ -132,11 +126,7 @@ fun NavigationDrawer(viewModel: NavigationDrawerViewModel, drawerState: DrawerSt
 
 @ExperimentalMaterial3Api
 @Composable
-fun DrawerHeader(
-    viewModel: NavigationDrawerViewModel,
-    coroutineScope: CoroutineScope,
-    drawerState: DrawerState
-) {
+fun DrawerHeader(viewModel: NavigationDrawerViewModel) {
     val shortName by viewModel.shortName.collectAsState()
 
     Column(
@@ -164,7 +154,6 @@ fun DrawerHeader(
             if (shortName == "") {
                 ElevatedButton(
                     onClick = {
-                        closeDrawer(coroutineScope, drawerState)
                         viewModel.onItemClicked("login")
                     },
                     elevation = ButtonDefaults.buttonElevation(
@@ -176,7 +165,6 @@ fun DrawerHeader(
                 }
                 ElevatedButton(
                     onClick = {
-                        closeDrawer(coroutineScope, drawerState)
                         viewModel.onItemClicked("register")
                     },
                     elevation = ButtonDefaults.buttonElevation(
@@ -189,7 +177,6 @@ fun DrawerHeader(
             } else {
                 ElevatedButton(
                     onClick = {
-                        closeDrawer(coroutineScope, drawerState)
                         viewModel.onLogoutClicked()
                     },
                     elevation = ButtonDefaults.buttonElevation(
@@ -206,16 +193,9 @@ fun DrawerHeader(
 
 @ExperimentalMaterial3Api
 @Composable
-fun DrawerBody(
-    viewModel: NavigationDrawerViewModel,
-    coroutineScope: CoroutineScope,
-    drawerState: DrawerState,
-    menuItems: List<MenuItem>
-) {
+fun DrawerBody(viewModel: NavigationDrawerViewModel, menuItems: List<MenuItem>) {
     val sessionKey by viewModel.sessionKey.collectAsState()
     val isAdmin by viewModel.isAdmin.collectAsState()
-
-
 
     LazyColumn {
         items(menuItems) {
@@ -229,7 +209,6 @@ fun DrawerBody(
                     shape = ShapeDefaults.ExtraSmall,
                     enabled = !it.disabled,
                     onClick = {
-                        closeDrawer(coroutineScope, drawerState)
                         viewModel.onItemClicked(it.id)
                     }
                 ) {
@@ -259,8 +238,15 @@ fun DrawerBody(
 }
 
 @ExperimentalMaterial3Api
-fun closeDrawer(coroutineScope: CoroutineScope, drawerState: DrawerState) {
-    coroutineScope.launch {
-        drawerState.close()
+@Composable
+fun CloseDrawer(viewModel: NavigationDrawerViewModel, drawerState: DrawerState) {
+    val activateCloseDrawerAnimation by viewModel.activateCloseDrawerAnimation.collectAsState()
+
+    LaunchedEffect(activateCloseDrawerAnimation) {
+        if (activateCloseDrawerAnimation) {
+            drawerState.close()
+        }
+        viewModel.activateCloseDrawerAnimation.value = false
     }
+
 }

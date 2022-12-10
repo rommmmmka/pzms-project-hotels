@@ -4,11 +4,12 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,30 +17,43 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kravets.hotels.booker.R
 import com.kravets.hotels.booker.ui.screen.view_model.MainPageViewModel
 import com.kravets.hotels.booker.ui.shared.*
 import com.kravets.hotels.booker.ui.theme.Purple40
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @ExperimentalMaterial3Api
 @Composable
 fun MainPage(viewModel: MainPageViewModel, snackbarHostState: SnackbarHostState) {
-    DisplaySnackbar(viewModel, snackbarHostState)
+    val refreshing by viewModel.refreshing.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        SearchPart(viewModel)
-        ResultsPart(viewModel)
+    val pullRefreshState = rememberPullRefreshState(refreshing, viewModel::refresh)
+
+    DisplaySnackbar(viewModel, snackbarHostState)
+    HotelInfoDialog(viewModel)
+
+    Box(Modifier.pullRefresh(pullRefreshState)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            SearchPart(viewModel)
+            ResultsPart(viewModel)
+        }
+        PullRefreshIndicator(refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
     }
 
-    HotelInfoDialog(viewModel)
 }
 
 @ExperimentalCoroutinesApi

@@ -18,6 +18,7 @@ import com.kravets.hotels.booker.service.api_object.RoomApiObject
 import com.kravets.hotels.booker.service.other.DataStore
 import com.kravets.hotels.booker.ui.Routes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -95,6 +96,7 @@ class MainPageViewModel(
     val sessionKey: StateFlow<String> =
         dataStore.sessionKey.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
+    val refreshing: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     init {
         getCitiesList()
@@ -247,5 +249,19 @@ class MainPageViewModel(
             _isProcessingOrderRequest.value = false
         }
 
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            refreshing.value = true
+            cityId.value = 1
+            adultsCount.value = TextFieldValue("1")
+            childrenCount.value = TextFieldValue("0")
+            getCitiesList()
+            getServerDate()
+
+            delay(300)
+            refreshing.value = false
+        }
     }
 }

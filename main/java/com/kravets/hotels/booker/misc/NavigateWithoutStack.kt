@@ -25,13 +25,10 @@ fun navigateWithoutStack(
         }
     }
 
+
+
     scope.launch {
-        navController.navigate(
-            route = destination,
-        ) {
-            popUpTo(navController.currentBackStackEntry?.destination?.route ?: "") {
-                inclusive = true
-            }
-        }
+        navController.popBackStack()
+        navController.navigate(destination)
     }
 }
