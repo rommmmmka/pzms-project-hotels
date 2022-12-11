@@ -26,7 +26,6 @@ fun navigateWithoutStack(
     }
 
 
-
     scope.launch {
         navController.popBackStack()
         navController.navigate(destination)

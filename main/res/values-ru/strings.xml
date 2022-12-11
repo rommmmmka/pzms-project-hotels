@@ -100,4 +100,6 @@
     </plurals>
     <string name="see_rooms">Просмотреть номера</string>
     <string name="order_room_for_hotel">Забронировать номер</string>
+    <string name="cost_filter">По стоимости</string>
+    <string name="rooms_list">Список номеров</string>
 </resources>

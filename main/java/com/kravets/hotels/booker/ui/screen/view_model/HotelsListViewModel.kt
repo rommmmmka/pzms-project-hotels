@@ -2,18 +2,22 @@ package com.kravets.hotels.booker.ui.screen.view_model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.kravets.hotels.booker.R
 import com.kravets.hotels.booker.misc.ErrorMessage
+import com.kravets.hotels.booker.misc.navigateWithoutStack
 import com.kravets.hotels.booker.model.entity.CityEntity
 import com.kravets.hotels.booker.model.entity.HotelEntity
 import com.kravets.hotels.booker.service.api_object.HotelApiObject
+import com.kravets.hotels.booker.ui.Routes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
-class HotelsListViewModel : ViewModel() {
+class HotelsListViewModel(private val _navController: NavHostController) : ViewModel() {
     val displaySnackbarMessage: MutableStateFlow<Int> = MutableStateFlow(0)
 
     private val _hotelsList: MutableStateFlow<List<HotelEntity>> = MutableStateFlow(emptyList())
@@ -53,7 +57,7 @@ class HotelsListViewModel : ViewModel() {
         getHotelsList()
     }
 
-    fun getHotelsList() {
+    private fun getHotelsList() {
         _hotelsList.value = emptyList()
         viewModelScope.launch {
             while (true) {
@@ -82,5 +86,12 @@ class HotelsListViewModel : ViewModel() {
             delay(300)
             refreshing.value = false
         }
+    }
+
+    fun onSeeRoomsPressed(hotelEntity: HotelEntity) {
+        navigateWithoutStack(
+            _navController, viewModelScope,
+            "${Routes.RoomsList}?hotel=${hotelEntity.id}&city=${hotelEntity.city.id}"
+        )
     }
 }

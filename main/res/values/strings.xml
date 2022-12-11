@@ -100,4 +100,6 @@
     </plurals>
     <string name="see_rooms">See rooms</string>
     <string name="order_room_for_hotel">Order room</string>
+    <string name="cost_filter">By cost</string>
+    <string name="rooms_list">Rooms list</string>
 </resources>

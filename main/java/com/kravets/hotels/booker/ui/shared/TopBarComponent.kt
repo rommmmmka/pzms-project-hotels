@@ -26,6 +26,7 @@ object TopBarNames {
     val Orders: Pair<Int, Int?> = Pair(R.string.tab_orders, null)
 
     val HotelsList: Pair<Int, Int?> = Pair(R.string.hotels_list, null)
+    val RoomsList: Pair<Int, Int?> = Pair(R.string.rooms_list, null)
 
     fun getTitleByRoute(route: String?): Pair<Int, Int?> {
         var currentRoute = route ?: ""
@@ -39,6 +40,7 @@ object TopBarNames {
             Routes.Orders -> Orders
 
             Routes.HotelsList -> HotelsList
+            Routes.RoomsList -> RoomsList
 
             else -> MainPage
         }

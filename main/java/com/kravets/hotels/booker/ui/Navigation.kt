@@ -30,6 +30,7 @@ object Routes {
     const val Orders = "orders"
 
     const val HotelsList = "list_hotels"
+    const val RoomsList = "list_rooms"
 }
 
 @ExperimentalMaterialApi
@@ -42,8 +43,6 @@ fun Navigation() {
     val navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
     val dataStore = DataStore(LocalContext.current)
-
-//    val topBarName = remember { mutableStateOf(TopBarNames.MainPage) }
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -134,11 +133,26 @@ fun Navigation() {
                         route = Routes.HotelsList
                     ) { navBackStackEntry ->
                         HotelsListPage(
-                            viewModel = HotelsListViewModel(),
-                            snackbarHostState = snackbarHostState
+                            HotelsListViewModel(navController),
+                            snackbarHostState
                         )
                     }
 
+                    composable(
+                        route = Routes.RoomsList + "?hotel={hotel}&city={city}",
+                        arguments = listOf(
+                            navArgument("hotel") { defaultValue = 0L },
+                            navArgument("city") { defaultValue = 0L }
+                        )
+                    ) { navBackStackEntry ->
+                        RoomsListPage(
+                            RoomsListViewModel(
+                                navBackStackEntry.arguments?.getLong("hotel"),
+                                navBackStackEntry.arguments?.getLong("city")
+                            ),
+                            snackbarHostState
+                        )
+                    }
                 }
             }
         }

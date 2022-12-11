@@ -253,7 +253,7 @@ fun RoomInfoDialog(viewModel: OrdersPageViewModel) {
 
     if (roomInfoDialogDisplay) {
         AlertDialog(
-            onDismissRequest = { viewModel.onHotelInfoClose() },
+            onDismissRequest = { viewModel.onRoomInfoClose() },
             text = {
                 Column {
                     CardImageBoxComponent(

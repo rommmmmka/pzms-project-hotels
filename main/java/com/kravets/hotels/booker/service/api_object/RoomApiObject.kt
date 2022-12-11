@@ -26,7 +26,25 @@ object RoomApiObject {
         city: Long, adultsCount: Int, childrenCount: Int, checkInDate: String, checkOutDate: String
     ): Response<List<RoomEntity>> {
         return getInstance().searchRooms(
-            city, adultsCount, childrenCount, checkInDate, checkOutDate
+            city,
+            adultsCount,
+            childrenCount,
+            checkInDate,
+            checkOutDate
+        )
+    }
+
+    suspend fun getRoomsList(
+        filterHotel: Long = 0,
+        filterCity: Long = 0,
+        sortingProperty: String = "creationDate",
+        sortingDirection: String = "descending"
+    ): Response<List<RoomEntity>> {
+        return getInstance().getRoomsList(
+            filterHotel,
+            filterCity,
+            sortingProperty,
+            sortingDirection
         )
     }
 }
