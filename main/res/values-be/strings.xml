@@ -85,4 +85,19 @@
     <string name="room">"Нумар: "</string>
     <string name="action_pay">Аплаціць</string>
     <string name="action_order">Заказаць</string>
+    <string name="hotels_list">Спіс гатэляў</string>
+    <string name="any">Любы</string>
+    <string name="creation_date_filter">Па даце дабаўлення</string>
+    <string name="rooms_count_filter">Па колькасці нумароў</string>
+    <string name="filter">Фільтр</string>
+    <string name="sorting">Сарціроўка</string>
+    <string name="descending">Па змяншэнні</string>
+    <string name="ascending">Па ўзрастанні</string>
+    <plurals name="rooms_in_hotel">
+        <item quantity="one">%d нумар</item>
+        <item quantity="few">%d нумары</item>
+        <item quantity="many">%d нумароў</item>
+    </plurals>
+    <string name="see_rooms">Праглядзець нумары</string>
+    <string name="order_room_for_hotel">Забраніраваць нумар</string>
 </resources>

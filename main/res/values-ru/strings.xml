@@ -85,4 +85,19 @@
     <string name="room">"Номер: "</string>
     <string name="action_pay">Оплатить</string>
     <string name="action_order">Заказать</string>
+    <string name="hotels_list">Список отелей</string>
+    <string name="any">Любой</string>
+    <string name="creation_date_filter">По дате добавления</string>
+    <string name="rooms_count_filter">По количеству номеров</string>
+    <string name="filter">Фильтр</string>
+    <string name="sorting">Сортировка</string>
+    <string name="descending">По убыванию</string>
+    <string name="ascending">По возрастанию</string>
+    <plurals name="rooms_in_hotel">
+        <item quantity="one">%d номер</item>
+        <item quantity="few">%d номера</item>
+        <item quantity="many">%d номеров</item>
+    </plurals>
+    <string name="see_rooms">Просмотреть номера</string>
+    <string name="order_room_for_hotel">Забронировать номер</string>
 </resources>

@@ -28,6 +28,8 @@ object Routes {
     const val Register = "register"
     const val Login = "login"
     const val Orders = "orders"
+
+    const val HotelsList = "list_hotels"
 }
 
 @ExperimentalMaterialApi
@@ -103,7 +105,6 @@ fun Navigation() {
                             navArgument("message") { defaultValue = 0 }
                         )
                     ) { navBackStackEntry ->
-//                        topBarName.value = TopBarNames.Login
                         LoginPage(
                             viewModel = LoginPageViewModel(
                                 navController, dataStore,
@@ -120,7 +121,6 @@ fun Navigation() {
                             navArgument("message") { defaultValue = 0 }
                         )
                     ) { navBackStackEntry ->
-//                        topBarName.value = TopBarNames.Orders
                         OrdersPage(
                             viewModel = OrdersPageViewModel(
                                 dataStore,
@@ -130,6 +130,14 @@ fun Navigation() {
                         )
                     }
 
+                    composable(
+                        route = Routes.HotelsList
+                    ) { navBackStackEntry ->
+                        HotelsListPage(
+                            viewModel = HotelsListViewModel(),
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
 
                 }
             }

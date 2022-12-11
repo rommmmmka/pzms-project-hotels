@@ -34,25 +34,19 @@ import java.time.format.DateTimeFormatter
 @ExperimentalMaterial3Api
 @Composable
 fun MainPage(viewModel: MainPageViewModel, snackbarHostState: SnackbarHostState) {
-    val refreshing by viewModel.refreshing.collectAsState()
-
-    val pullRefreshState = rememberPullRefreshState(refreshing, viewModel::refresh)
-
     DisplaySnackbar(viewModel, snackbarHostState)
     HotelInfoDialog(viewModel)
 
-    Box(Modifier.pullRefresh(pullRefreshState)) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            SearchPart(viewModel)
-            ResultsPart(viewModel)
-        }
-        PullRefreshIndicator(refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SearchPart(viewModel)
+        ResultsPart(viewModel)
     }
+
 
 }
 

@@ -96,8 +96,6 @@ class MainPageViewModel(
     val sessionKey: StateFlow<String> =
         dataStore.sessionKey.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    val refreshing: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
     init {
         getCitiesList()
         getServerDate()
@@ -249,19 +247,5 @@ class MainPageViewModel(
             _isProcessingOrderRequest.value = false
         }
 
-    }
-
-    fun refresh() {
-        viewModelScope.launch {
-            refreshing.value = true
-            cityId.value = 1
-            adultsCount.value = TextFieldValue("1")
-            childrenCount.value = TextFieldValue("0")
-            getCitiesList()
-            getServerDate()
-
-            delay(300)
-            refreshing.value = false
-        }
     }
 }

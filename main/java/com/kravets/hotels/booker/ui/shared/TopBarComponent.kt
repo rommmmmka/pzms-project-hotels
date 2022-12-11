@@ -25,6 +25,8 @@ object TopBarNames {
     val Login: Pair<Int, Int?> = Pair(R.string.tab_sign_in, null)
     val Orders: Pair<Int, Int?> = Pair(R.string.tab_orders, null)
 
+    val HotelsList: Pair<Int, Int?> = Pair(R.string.hotels_list, null)
+
     fun getTitleByRoute(route: String?): Pair<Int, Int?> {
         var currentRoute = route ?: ""
         if (currentRoute.indexOf('?') != -1) {
@@ -35,6 +37,9 @@ object TopBarNames {
             Routes.Register -> Register
             Routes.Login -> Login
             Routes.Orders -> Orders
+
+            Routes.HotelsList -> HotelsList
+
             else -> MainPage
         }
     }

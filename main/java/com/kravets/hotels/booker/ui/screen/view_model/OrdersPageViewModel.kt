@@ -1,9 +1,9 @@
 package com.kravets.hotels.booker.ui.screen.view_model
 
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kravets.hotels.booker.R
+import com.kravets.hotels.booker.misc.ErrorMessage
 import com.kravets.hotels.booker.model.entity.HotelEntity
 import com.kravets.hotels.booker.model.entity.OrderEntity
 import com.kravets.hotels.booker.model.entity.RoomEntity
@@ -36,7 +36,7 @@ class OrdersPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
         getOrdersList()
     }
 
-    fun getOrdersList() {
+    private fun getOrdersList() {
         _ordersList.value = emptyList()
         viewModelScope.launch {
             while (true) {
@@ -46,7 +46,7 @@ class OrdersPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
                         _ordersList.value = response.body()?.reversed() ?: emptyList()
                         break
                     } else {
-                        displaySnackbarMessage.value = R.string.error_connecting_to_server
+                        displaySnackbarMessage.value = ErrorMessage.getStringId(response.code())
                     }
                 } catch (_: Exception) {
                     displaySnackbarMessage.value = R.string.error_connecting_to_server
@@ -81,6 +81,7 @@ class OrdersPageViewModel(dataStore: DataStore, message: Int?) : ViewModel() {
             viewModelScope.launch {
                 try {
                     OrderApiObject.removeOrder(sessionKey.value, orderEntity.id)
+                    getOrdersList()
                 } catch (_: Exception) {
                     displaySnackbarMessage.value = R.string.error_connecting_to_server
                 }

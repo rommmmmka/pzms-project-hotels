@@ -69,14 +69,14 @@ fun NavigationDrawer(viewModel: NavigationDrawerViewModel, drawerState: DrawerSt
                     role = "any"
                 ),
                 MenuItem(
-                    id = "hotels",
+                    id = "list_hotels",
                     name = stringResource(R.string.drawer_item_hotels),
                     icon = null,
                     disabled = false,
                     role = "any"
                 ),
                 MenuItem(
-                    id = "rooms",
+                    id = "list_rooms",
                     name = stringResource(R.string.drawer_item_rooms),
                     icon = null,
                     disabled = false,

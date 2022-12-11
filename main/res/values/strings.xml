@@ -85,4 +85,19 @@
     <string name="room">"Room: "</string>
     <string name="action_pay">Pay</string>
     <string name="action_order">Order</string>
+    <string name="hotels_list">Hotels list</string>
+    <string name="any">Any</string>
+    <string name="creation_date_filter">By creation date</string>
+    <string name="rooms_count_filter">By ooms count</string>
+    <string name="filter">Filter</string>
+    <string name="sorting">Sorting</string>
+    <string name="descending">Descending</string>
+    <string name="ascending">Ascending</string>
+    <plurals name="rooms_in_hotel">
+        <item quantity="zero">%d rooms</item>
+        <item quantity="one">%d room</item>
+        <item quantity="many">%d rooms</item>
+    </plurals>
+    <string name="see_rooms">See rooms</string>
+    <string name="order_room_for_hotel">Order room</string>
 </resources>
